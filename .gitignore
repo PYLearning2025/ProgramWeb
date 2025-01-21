@@ -169,3 +169,21 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+.vscode/launch.json
+accounts/__pycache__/__init__.cpython-39.pyc
+accounts/__pycache__/admin.cpython-39.pyc
+accounts/__pycache__/apps.cpython-39.pyc
+accounts/__pycache__/forms.cpython-39.pyc
+accounts/__pycache__/models.cpython-39.pyc
+accounts/__pycache__/views.cpython-39.pyc
+posts/__pycache__/__init__.cpython-39.pyc
+posts/__pycache__/admin.cpython-39.pyc
+posts/__pycache__/apps.cpython-39.pyc
+posts/__pycache__/forms.cpython-39.pyc
+posts/__pycache__/models.cpython-39.pyc
+posts/__pycache__/views.cpython-39.pyc
+ProgramWeb/__pycache__/__init__.cpython-39.pyc
+ProgramWeb/__pycache__/settings.cpython-39.pyc
+ProgramWeb/__pycache__/urls.cpython-39.pyc
+ProgramWeb/__pycache__/wsgi.cpython-39.pyc
+.env
