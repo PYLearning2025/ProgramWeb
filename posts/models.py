@@ -135,6 +135,7 @@ class FunctionStatus(models.Model):
 class GPTQuestion(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="gpt_questions")
     question = models.TextField(blank=True, null=False)
+    answer = models.TextField(blank=True, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
