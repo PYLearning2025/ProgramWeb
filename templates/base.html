@@ -275,6 +275,13 @@
         </section>
 
         {% block content %}{% endblock %}
+        {% if request.path == '/question/peer_assessment/' %}
+            {% include 'sidebars/peer_assessment.html' %}
+        {% elif request.path == '/question/peer_assessment/<int:question_id>/' %}
+            {% include 'sidebars/peer_assessment.html' %}
+        {% elif request.path == '/' %}
+            {% include 'sidebars/main.html' %}
+        {% endif %}
     </main>
 
     <!-- 登出確認模態框 -->
