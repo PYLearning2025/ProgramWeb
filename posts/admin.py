@@ -7,6 +7,7 @@ from .models import (
     TeachingMaterial,
     FunctionStatus,
     GPTQuestion,
+    Stage,
 )
 
 # 題目管理
@@ -63,6 +64,11 @@ class GPTAdmin(admin.ModelAdmin):
     search_fields = ("question__title", "answer")
     list_filter = ("created_at",)
 
+# 階段管理
+class StageAdmin(admin.ModelAdmin):
+    list_display = ("stage", "student", "started_at", "time_limit")
+    search_fields = ("stage", "student__username")
+
 # 註冊模型到 Django Admin
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(QuestionHistory, QuestionHistoryAdmin)
@@ -71,3 +77,4 @@ admin.site.register(PeerReview, PeerReviewAdmin)
 admin.site.register(TeachingMaterial, TeachingMaterialAdmin)
 admin.site.register(FunctionStatus, FunctionStatusAdmin)
 admin.site.register(GPTQuestion, GPTAdmin)
+admin.site.register(Stage, StageAdmin)
