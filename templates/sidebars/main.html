@@ -1,0 +1,61 @@
+{% load static %}
+<style>
+/* 側邊欄主容器 */
+#sidebar {
+    height: 100%;
+    width: 1000px; /* 側邊欄寬度，可依需要調整 */
+    position: fixed;
+    top: 0;
+    right: -1000px; /* 初始隱藏在螢幕右側 */
+    background-color: #f8f9fa;
+    overflow-y: auto;
+    transition: right 0.5s;
+    padding: 20px;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.5);
+    z-index: 1000;
+}
+/* 當加上 active 類別時，側邊欄滑入畫面 */
+#sidebar.active {
+    right: 0;
+}
+
+/* 側邊欄切換按鈕 */
+#sidebarToggle {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    background-color: #343a40;
+    color: #fff;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 1100;
+    /* 讓按鈕文字垂直排列 */
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    transition: right 0.5s, background-color 0.5s;
+}
+#sidebarToggle:hover {
+    background-color: #495057;
+}
+/* 當側邊欄打開時，切換按鈕也跟著移動 */
+#sidebarToggle.active {
+    background-color: #212529;
+    right: 1000px;  /* 移動與側邊欄相同的距離 */
+}
+</style>
+
+<!-- 側邊攔內容區塊 -->
+<div id="sidebar">
+    <!-- 這邊放入你要顯示的內容，例如圖片或文字 -->
+    <h3>學生活動說明圖</h3>
+    <img src="{% static 'images/student_activities.jpg' %}" alt="學生活動說明圖" style="width:900px; display: block; margin: auto;">
+</div>
+
+<!-- 側邊攔切換按鈕 -->
+<div id="sidebarToggle">活動流程說明</div>
+
+<!-- JavaScript 控制側邊欄與按鈕的開關 -->
+<script src="{% static 'js/sidebar.js' %}"></script>
