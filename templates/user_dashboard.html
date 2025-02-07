@@ -66,6 +66,7 @@
                         <div class="card-body">
                             <h5 class="card-title" style="font-family: 微軟正黑體;">{{ question.title }}</h5>
                             <p class="card-text question-description" style="font-family: 微軟正黑體; font-size: 12pt; color: gray; text-align: left; white-space: pre-wrap;" id="description-{{ question.id }}">{{ question.description }}</p>
+                            <p class="text-muted position-absolute bottom-0 end-0 m-2" style="font-size: 12pt;">出題:{{ question.creator.name }}</p>
                         </div>
                     </a>
                 </div>
@@ -80,14 +81,26 @@
     <!-- 作答記錄 -->
     <div class="mt-5 answer-list">
         <h2 class="section-title mb-4" style="font-family: 微軟正黑體; color: #343a40;">您的作答記錄</h2>
-        {% if user_answers and user_answers.count > 0 %}
-        <ul class="list-group" style="font-family: 微軟正黑體;">
-            {% for answer in user_answers %}
-            <li class="list-group-item menu-item mt-3 answer-list-item">題目：{{ answer.question.title }}</li>
+            {% if user_answers %}
+            <div class="row">
+                {% for answer in user_answers %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm answer-card">
+                            <a href="{% url 'QuestionAnswer' answer.question.id %}" class="btn">
+                            <div class="card-body">
+                                {% if answer.question %}
+                                    <h5 class="card-title" style="font-family: 微軟正黑體;">{{ answer.question.title }}</h5>
+                                    <p class="card-text question-description" style="font-family: 微軟正黑體; font-size: 12pt; color: gray; text-align: left; white-space: pre-wrap;" id="description-{{ answer.question.id }}">{{ answer.question.description }}</p>
+                                    <p class="text-muted position-absolute bottom-0 end-0 m-2" style="font-size: 12pt;">作答:{{ answer.student.name }}</p>
+                                {% endif %}
+                            </div>
+                        </a>
+                    </div>
+                </div>
             {% endfor %}
-        </ul>
+        </div>
         {% else %}
-        <p class="text-center" style="font-family: 微軟正黑體; color: gray;">您目前沒有任何作答記錄。</p>
+            <p class="text-center" style="font-family: 微軟正黑體; color: gray;">您目前沒有任何作答記錄。</p>
         {% endif %}
     </div>
 
@@ -95,15 +108,29 @@
     <div class="mt-5 review-list">
         <h2 class="section-title mb-4" style="font-family: 微軟正黑體; color: #343a40;">您的評分記錄</h2>
         {% if user_reviews and user_reviews.count > 0 %}
-        <ul class="list-group" style="font-family: 微軟正黑體;">
+        <div class="row">
             {% for review in user_reviews %}
-            <li class="list-group-item menu-item mt-3 review-list-item">題目：{{ review.reviewed_question.title }}</li>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm review-card">
+                    <a href="{% url 'PeerAssessment' review.reviewed_question.id %}" class="btn">
+                        <div class="card-body">
+                            {% if review.reviewed_question %}
+                                <h5 class="card-title" style="font-family: 微軟正黑體;">{{ review.reviewed_question.title }}</h5>
+                                <p class="card-text question-description" style="font-family: 微軟正黑體; font-size: 12pt; color: gray; text-align: left; white-space: pre-wrap;" id="description-{{ review.reviewed_question.id }}">{{ review.reviewed_question.description }}</p>
+                                    <p class="text-muted position-absolute bottom-0 end-0 m-2" style="font-size: 12pt;">評分:{{ review.reviewer.name }}</p>
+                            {% endif %}
+                        </div>
+                    </a>
+                </div>
+            </div>
             {% endfor %}
-        </ul>
+        </div>
         {% else %}
         <p class="text-center" style="font-family: 微軟正黑體; color: gray;">您目前沒有任何評分記錄。</p>
         {% endif %}
     </div>
+</div>
+<div style="height: 30px;">
 </div>
 
 <script src="{% static 'js/question_card.js' %}"></script>
