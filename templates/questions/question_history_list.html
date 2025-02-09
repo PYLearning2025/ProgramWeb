@@ -34,13 +34,13 @@
                     </td>
                     <!-- 內容 -->
                     <td style="font-family: '微軟正黑體'; vertical-align: middle; word-wrap: break-word;">{{ record.title }}</td>
-                    <td style="font-family: '微軟正黑體'; font-size: 12pt; color: gray; text-align: left; vertical-align: middle; word-wrap: break-word;">
-                        {{ record.description|truncatewords:20 }}
+                    <td style="font-family: '微軟正黑體'; font-size: 12pt; color: gray; text-align: left; vertical-align: middle; word-wrap: break-word; overflow-wrap: break-word; white-space: pre-line;">
+                        {{ record.description }}
                     </td>
                     <td style="font-family: '微軟正黑體'; text-align: center; vertical-align: middle; word-wrap: break-word;">
-                        {{ record.creator.username }}
+                        {{ record.creator.name }}
                     </td>
-                    <td style="font-family: '微軟正黑體'; vertical-align: middle; word-wrap: break-word;">
+                    <td style="font-family: '微軟正黑體'; vertical-align: middle; word-wrap: break-word; overflow-wrap: break-word; white-space: pre-line;">
                         {{ record.answer }}
                     </td>
                     <td style="font-family: '微軟正黑體'; text-align: center; vertical-align: middle; word-wrap: break-word;">
