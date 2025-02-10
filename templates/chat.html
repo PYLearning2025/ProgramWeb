@@ -121,6 +121,75 @@
     .btn-send:hover {
         background-color: #0056b3;
     }
+
+    /* 打字動畫的容器 */
+    .typing-indicator {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 10px 15px;
+        background-color: #f1f0f0;
+        border-radius: 20px;
+        width: fit-content;
+        margin-top: 5px;
+    }
+
+    /* 三個交錯輪轉的小圓點 */
+    .typing-indicator span {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        margin: 0 3px;
+        background-color: #b0b0b0; /* 初始為灰色 */
+        border-radius: 50%;
+        animation: typing-animation 1.4s infinite ease-in-out;
+    }
+
+    /* 交錯輪轉的延遲時間 */
+    .typing-indicator span:nth-child(1) { animation-delay: 0s; }
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+    /* 動畫效果 */
+    @keyframes typing-animation {
+        0% { opacity: 0.3; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.2); }
+        100% { opacity: 0.3; transform: scale(1); }
+    }
+
+    /* 讓 <pre> 本身沒有背景和圓角 */
+    pre {
+        border-radius: 0;
+        background: none;
+        padding: 0;
+        margin-bottom: 10px; /* 確保 <code> 和 其他內容有間距 */
+    }
+    
+    /* 讓 <code> 區塊擁有圓角 + 語言名稱 */
+    pre code {
+        display: block;
+        border-radius: 10px; /* 圓角 */
+        background: #282c34; /* 深色背景 */
+        padding: 15px;
+        color: #ffffff; /* 文字顏色 */
+        font-family: "Courier New", monospace;
+        position: relative;
+    }
+    
+    /* 顯示程式語言名稱 */
+    pre code::before {
+        content: attr(data-lang); /* 讀取語言名稱 */
+        display: block;
+        font-size: 0.9em;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 5px 10px;
+        border-radius: 5px;
+        margin-bottom: 5px;
+        width: fit-content;
+    }        
 </style>
 
 <div class="chat-container">
@@ -134,7 +203,7 @@
                             {{ chat.question|linebreaksbr }}
                         </p>
                         <!-- Answer -->
-                        <p class="message-received">
+                        <p class="message-received" id="chat-answer">
                             {{ chat.answer|linebreaksbr }}
                         </p>
                     </div>

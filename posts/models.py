@@ -181,3 +181,12 @@ class GPTQuestion(models.Model):
 
     def __str__(self):
         return self.question
+
+class GPTLog(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="gpt_logs")
+    question = models.ForeignKey(GPTQuestion, on_delete=models.CASCADE, related_name="logs")
+    log = models.TextField(blank=True, null=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.log
