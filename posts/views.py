@@ -5,7 +5,7 @@ from django.utils.html import strip_tags
 from django.http import JsonResponse
 from django.db.models import Count, Case, When, IntegerField, Sum, F, Window
 from accounts.models import Student
-from .models import Question, StudentAnswer, QuestionHistory, PeerReview, TeachingMaterial, FunctionStatus, GPTQuestion, Stage
+from .models import Question, StudentAnswer, QuestionHistory, PeerReview, TeachingMaterial, FunctionStatus, GPTQuestion, Stage, GPTLog
 from .forms import QuestionForm, StudentAnswerForm, QuestionHistoryForm, PeerReviewForm, QuestionCommentForm, GPTQuestionForm
 from django.db.models import Q, Exists, OuterRef
 from django.db.models.functions import DenseRank
@@ -567,13 +567,8 @@ def ask_gpt(message):
     except Exception as e:
         ai_reply = f"發生錯誤：{e}"
     return ai_reply
-    
-
-# 處理對話過程
-from django.shortcuts import redirect
 
 def chat_view(request):
-    chats = GPTQuestion.objects.filter(student=request.user)
     if request.method == 'POST':
         form = GPTQuestionForm(request.POST)
         if form.is_valid():
@@ -584,17 +579,33 @@ def chat_view(request):
             user_question = strip_tags(user_question)
             ai_reply = strip_tags(ai_reply)
 
-            # 儲存對話到資料庫
-            new_chat = GPTQuestion(student=request.user, question=user_question, answer=ai_reply, created_at=timezone.now())
-            new_chat.save()
-
-            # 更新問答列表
-            chats = GPTQuestion.objects.filter(student=request.user)  # 更新問答
-
-            # 使用重定向避免表單重複提交
-            return redirect('Chat')
+            if ai_reply.startswith("發生錯誤："):
+                new_chat = GPTQuestion(
+                    student=request.user,
+                    question=user_question,
+                    answer="系統錯誤請聯絡系統管理員",
+                    created_at=timezone.now()
+                )
+                new_chat.save()
+                gpt_log = GPTLog(
+                    student=request.user,
+                    question=new_chat,
+                    log=ai_reply
+                )
+                gpt_log.save()
+                return JsonResponse({'success': True, 'message': user_question, 'response': "系統錯誤請聯絡系統管理員"})
+            else:
+                new_chat = GPTQuestion(
+                    student=request.user,
+                    question=user_question,
+                    answer=ai_reply,
+                    created_at=timezone.now()
+                )
+                new_chat.save()
+                return JsonResponse({'success': True, 'message': user_question, 'response': ai_reply})
         else:
-            print(form.errors)  # 打印表單錯誤
+            print(form.errors)
             return JsonResponse({'success': False, 'errors': form.errors}, status=400)
 
+    chats = GPTQuestion.objects.filter(student=request.user)
     return render(request, 'chat.html', {'chats': chats})

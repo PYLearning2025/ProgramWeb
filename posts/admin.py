@@ -8,6 +8,7 @@ from .models import (
     FunctionStatus,
     GPTQuestion,
     Stage,
+    GPTLog,
 )
 
 # 題目管理
@@ -69,6 +70,12 @@ class StageAdmin(admin.ModelAdmin):
     list_display = ("stage", "student", "started_at", "time_limit")
     search_fields = ("stage", "student__username")
 
+# GPT Log 管理
+class GPTLogAdmin(admin.ModelAdmin):
+    list_display = ("question", "student", "log", "created_at")
+    search_fields = ("question__title", "log")
+    list_filter = ("created_at",)
+
 # 註冊模型到 Django Admin
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(QuestionHistory, QuestionHistoryAdmin)
@@ -78,3 +85,4 @@ admin.site.register(TeachingMaterial, TeachingMaterialAdmin)
 admin.site.register(FunctionStatus, FunctionStatusAdmin)
 admin.site.register(GPTQuestion, GPTAdmin)
 admin.site.register(Stage, StageAdmin)
+admin.site.register(GPTLog, GPTLogAdmin)
