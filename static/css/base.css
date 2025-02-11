@@ -1,0 +1,244 @@
+body {
+    padding-top: 20px;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+    color: #000;
+}
+
+header {
+    background-color: #000;  /* Changed to black */
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+    opacity: 1;
+}
+
+header.scrolled {
+    opacity: 0.7;
+    background-color: #000;  /* Black when scrolled */
+}
+
+main {
+    padding: 20px;
+    margin-bottom: 60px;
+}
+
+footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    margin-top: 5px;
+    text-align: center;
+    background-color: #222;
+    padding: 10px 0;
+    color: #fff;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    margin-right: 20px;
+    color: white;  /* Changed to white */
+}
+
+nav {
+    flex: 1;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    margin: 0 10px;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    position: relative;
+}
+
+nav ul li a::before,
+nav ul li a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 3px;
+    background-color: #fff;
+    transition: width 0.3s ease;
+}
+
+nav ul li a::before {
+    top: -6px;
+    left: 0;
+}
+
+nav ul li a::after {
+    bottom: -6px;
+    left: 0;
+}
+
+nav ul li a:hover::before,
+nav ul li a:hover::after {
+    width: 100%;
+}
+
+.navbar-toggler {
+    border: none;
+    color: #fff;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1001;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.modal-buttons button {
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.yes-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.no-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.logout-btn {
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #000;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    text-decoration: none;
+}
+
+.form {
+    background-color: rgb(212, 214, 215);
+    padding: 10px;
+    border-radius: 10px;
+    transform: translate(21%, 3%);
+    width: 70%;
+}
+.text {
+    margin: 10px 0px;
+}
+.button {
+    text-align: end;
+    margin-top: 20px;
+}
+h2 {
+    text-align: center;
+}
+.offcanvas-body {
+    background-color: #f8f9fa;
+}
+.menu-item {
+    color: #333;
+    background-color: #e0e0e0;
+    border: 2px solid #c0c0c0;
+    padding: 20px;
+    transition: all 0.3s ease-in-out;
+    display: block;
+    font-size: 1.25rem;
+    font-weight: 500;
+}
+.menu-item:hover {
+    background-color: #d0d0d0;
+    border-color: #a0a0a0;
+    color: #000;
+}
+.shadow-sm {
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+textarea {
+    resize: none; /* 禁止使用者手動調整大小 */
+    height: auto; /* 使 textarea 根據內容自適應高度 */
+}
+
+#id_description, #id_hint { /* 描述與提示框 */
+    min-height: 150px;
+    max-height: 200px;
+}
+
+#id_input_format, #id_output_format,
+#id_input_example, #id_output_example { /* 輸入/輸出格式與範例框 */
+    min-height: 100px;
+    max-height: 120px;
+}
+
+.answer-box {
+    overflow-y: auto;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 15px;
+    height: 1036px;
+}
+
+.CodeMirror.cm-s-default {
+    height: 1000px; 
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    nav ul {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        padding: 10px 0;
+        background-color: #000;  /* Black background on mobile */
+    }
+
+    nav ul.active {
+        display: flex;
+    }
+
+    .navbar-toggler {
+        display: block;
+        margin-left: auto;
+    }
+}
