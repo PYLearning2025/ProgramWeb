@@ -608,4 +608,4 @@ def chat_view(request):
             return JsonResponse({'success': False, 'errors': form.errors}, status=400)
 
     chats = GPTQuestion.objects.filter(student=request.user)
-    return render(request, 'chat.html', {'chats': chats})
+    return render(request, 'sidebars/chat.html', {'chats': chats})

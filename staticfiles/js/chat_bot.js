@@ -1,19 +1,39 @@
+// 切換側邊欄顯示狀態
+document.getElementById("sidebarIcon").addEventListener("click", function() {
+    const chatbotElement = document.getElementById("chatbot");
+    chatbotElement.classList.toggle("active");
+    document.getElementById("sidebarIcon").classList.toggle("active");
+
+    // 當 #chatbot 顯示時滾動到底部
+    if (chatbotElement.classList.contains("active")) {
+        // 等待動畫結束後滾動到底部
+        setTimeout(() => {
+            scrollToBottom(chatbotElement);
+        }, 200); // 根據需要的動畫時間調整延遲
+    }
+});
+
+// 滾動到指定元素的最底部
+function scrollToBottom(element) {
+    element.scrollTop = element.scrollHeight;
+}
+
+// 當 DOM 內容加載完成後執行
 document.addEventListener('DOMContentLoaded', function () {
     // 取得 DOM 元素
     const chatForm = document.getElementById('chat-form');
     const messageInput = document.getElementById('message-input');
     const messagesList = document.getElementById('messages-list');
+    const chatbotElement = document.getElementById('chatbot');
     const messagesBox = document.getElementById('messages-box'); // 訊息區域
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content'); // CSRF Token
+    const chatUrl = chatForm.getAttribute('action'); // 聊天機器人 API 位址
 
     // 初始化時滾動到底部
-    const initialScroll = () => {
-        messagesBox.scrollTop = messagesBox.scrollHeight;
-    };
-    initialScroll();
+    scrollToBottom(messagesBox);
 
-    // 建立 Showdown Markdown 轉換器（全局只建立一次）
-    const converter = new showdown.Converter({ 
+    // 建立 Showdown Markdown 轉換器
+    const converter = new showdown.Converter({
         tables: true, 
         ghCodeBlocks: true, 
         omitExtraWLInCodeBlocks: true,
@@ -26,9 +46,8 @@ document.addEventListener('DOMContentLoaded', function () {
      * @param {HTMLElement} messageElement - 要處理的 .message-received 元素
      */
     function processMessageElement(messageElement) {
-        // 取得原始內容，並將 <br> 換行標籤轉成 \n（保留換行）
         let originalHTML = messageElement.innerHTML.trim();
-        let markdownText = originalHTML.replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/<br\s*\/?\>/g, "\n");
+        let markdownText = originalHTML.replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/<br\s*\/?>/g, "\n");
 
         // 利用 showdown 轉換 Markdown 成 HTML
         let htmlOutput = converter.makeHtml(markdownText).trim();
@@ -37,8 +56,6 @@ document.addEventListener('DOMContentLoaded', function () {
         // 使用 highlight.js 處理 <pre><code> 區塊
         messageElement.querySelectorAll("pre code").forEach((block) => {
             hljs.highlightElement(block);
-
-            // 取得語言名稱（例如 language-javascript），若無則預設為 'Code'
             let langClass = block.className.match(/language-(\w+)/);
             let lang = langClass ? langClass[1] : 'Code';
             block.setAttribute("data-lang", lang.toUpperCase());
@@ -57,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 訊息送出表單提交事件
     chatForm.addEventListener('submit', function (e) {
-        e.preventDefault(); // 防止表單預設送出導致頁面刷新
+        e.preventDefault(); // 防止表單預設送出
 
         const message = messageInput.value.trim();
         if (message === '') return; // 避免空訊息
@@ -70,6 +87,9 @@ document.addEventListener('DOMContentLoaded', function () {
         userMessageText.textContent = message;
         userMessage.appendChild(userMessageText);
         messagesList.appendChild(userMessage);
+
+        // 滾動到底部
+        scrollToBottom(chatbotElement);
 
         // 清空輸入框
         messageInput.value = '';
@@ -84,11 +104,8 @@ document.addEventListener('DOMContentLoaded', function () {
         `;
         messagesList.appendChild(typingIndicator);
 
-        // 滾動到底部
-        messagesBox.scrollTop = messagesBox.scrollHeight;
-
         // 使用 Fetch API 送出 POST 請求
-        fetch('', {
+        fetch(chatUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -106,12 +123,14 @@ document.addEventListener('DOMContentLoaded', function () {
             } catch (error) {
                 console.error('JSON Parse Error:', error);
                 alert('發生錯誤，請稍後再試！');
+                messagesList.removeChild(typingIndicator);
                 return;
             }
 
             if (!data.success) {
                 console.error('Error:', data.errors);
                 alert('發生錯誤：' + JSON.stringify(data.errors));
+                messagesList.removeChild(typingIndicator);
                 return;
             }
 
@@ -133,20 +152,18 @@ document.addEventListener('DOMContentLoaded', function () {
             processMessageElement(aiMessageText);
 
             // 滾動到底部
-            messagesBox.scrollTop = messagesBox.scrollHeight;
+            scrollToBottom(chatbotElement);
         })
         .catch(error => {
             console.error('Fetch Error:', error);
             alert('發生錯誤，請稍後再試');
-            if (typingIndicator.parentNode) {
-                messagesList.removeChild(typingIndicator);
-            }
+            messagesList.removeChild(typingIndicator);
         });
     });
 
     // 當訊息區域有新節點加入時自動滾動到底部
     const observer = new MutationObserver(() => {
-        messagesBox.scrollTop = messagesBox.scrollHeight;
+        scrollToBottom(chatbotElement);
     });
     observer.observe(messagesList, { childList: true });
 });
