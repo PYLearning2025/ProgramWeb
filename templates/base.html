@@ -52,7 +52,9 @@
 
             // 登出按鈕觸發模態框
             const logoutButton = document.querySelector('.logout-btn');
+
             const modal = document.querySelector('.modal');
+            const modalContent = document.querySelector('.modal-content');
             const closeModal = () => modal.style.display = 'none';
 
             const yesButton = document.querySelector('.yes-btn');
@@ -61,7 +63,7 @@
             // 顯示登出確認的模態框
             logoutButton.addEventListener('click', function (e) {
                 e.preventDefault(); // 防止表單提交
-                modal.style.display = 'block';
+                modal.style.display = 'flex';
             });
 
             // 點擊 "是" 登出
@@ -121,18 +123,18 @@
             {% include 'sidebars/main.html' %}
         {% endif %}
         {% include 'sidebars/chat.html' %}
-    </main>
 
-    <!-- 登出確認模態框 -->
-    <div class="modal">
-        <div class="modal-content">
-            <h3>是否確定登出?</h3>
-            <div class="modal-buttons">
-                <button class="yes-btn">是</button>
-                <button class="no-btn">否</button>
+        <!-- 登出確認模態框 -->
+        <div class="modal">
+            <div class="modal-content">
+                <h3>是否確定登出?</h3>
+                <div class="modal-buttons">
+                    <button class="yes-btn">是</button>
+                    <button class="no-btn">否</button>
+                </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
