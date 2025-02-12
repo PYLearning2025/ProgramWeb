@@ -1,5 +1,7 @@
 from django.db import models
 from accounts.models import Student
+from datetime import timedelta
+from django.utils import timezone
 
 # 題目主表（學生出題，包含解答）
 class Question(models.Model):
@@ -119,10 +121,49 @@ class Stage(models.Model):
         ('end', '結束'),
         ('all', '全部')
     ]
+    
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="stages")
     stage = models.CharField(max_length=20, choices=STAGE_CHOICES, default='create_questions')
+    started_at = models.DateTimeField(null=True, blank=True)  # 記錄階段開始時間
+    time_limit = models.DurationField(default=timedelta(weeks=1))  # 預設時間限制為1週
 
     def __str__(self):
-        return
+        return f'{self.student.name} - {self.get_stage_display()}'
+
+    def get_stage_time_limit(self):
+        """根據當前階段設定不同的時間限制"""
+        stage_time_limits = {
+            'create_questions': timedelta(weeks=1),  # 出題階段 1 週
+            'answer_questions': timedelta(weeks=2),   # 作答階段 2 週
+            'peer_review': timedelta(weeks=1),         # 互評階段 1 週
+            'update_questions': timedelta(weeks=1),    # 更新題目階段 1 週
+            'end': timedelta(days=0),                  # 結束階段沒有時間限制
+        }
+        return stage_time_limits.get(self.stage, timedelta(weeks=1))  # 預設時間為 1 週
+
+    def is_time_expired(self):
+        """檢查階段是否超過時間限制"""
+        if self.started_at is None:
+            return False  # 如果未設定開始時間，表示尚未開始，時間未過期
+        return (self.started_at + self.get_stage_time_limit()) <= timezone.now()
+
+    def advance_stage(self):
+        """進入下一階段，這個方法會依照你的需求調整"""
+        if self.student.is_superuser:  # 如果是 superuser，則不進行時間檢查
+            return
+        if self.is_time_expired() and self.stage != 'end':
+            next_stage = self.get_next_stage()
+            self.stage = next_stage
+            self.started_at = timezone.now()  # 更新開始時間為當前時間
+            self.save()
+
+    def get_next_stage(self):
+        """根據當前階段返回下一階段"""
+        stage_order = ['create_questions', 'answer_questions', 'peer_review', 'update_questions', 'end']
+        current_index = stage_order.index(self.stage)
+        if current_index < len(stage_order) - 1:
+            return stage_order[current_index + 1]
+        return self.stage  # 如果是最後一個階段，返回 'end'
 
 # 功能表
 class FunctionStatus(models.Model):
@@ -135,7 +176,17 @@ class FunctionStatus(models.Model):
 class GPTQuestion(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="gpt_questions")
     question = models.TextField(blank=True, null=False)
+    answer = models.TextField(blank=True, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.question
+
+class GPTLog(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="gpt_logs")
+    question = models.ForeignKey(GPTQuestion, on_delete=models.CASCADE, related_name="logs")
+    log = models.TextField(blank=True, null=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.log

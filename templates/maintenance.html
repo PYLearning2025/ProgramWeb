@@ -1,9 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
-
 {% block title %}頁面維護中{% endblock %}
-
 {% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/error_page.css' %}">
 <div class="container text-center mt-5" style="color: #555; font-family: 'Verdana', sans-serif; padding: 20px; max-width: 600px;">
     <!-- 加入 Lottie 動畫，置中對齊 -->
     <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
@@ -34,13 +33,4 @@
         margin: 0 auto; /* 置中對齊 */
     ">返回首頁</a>
 </div>
-
-<style>
-    /* 按鈕懸停效果 */
-    .contact-btn:hover {
-        transform: scale(1.05); /* 懸停時放大 */
-        background-color: #555; /* Contact Us 按鈕懸停的特定背景顏色 */
-        color: #fff; /* 確保文字顏色可讀 */
-    }
-</style>
 {% endblock %}

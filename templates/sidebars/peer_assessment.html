@@ -1,0 +1,15 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/sidebar.css' %}">
+
+<!-- 側邊攔內容區塊 -->
+<div id="sidebar">
+    <!-- 這邊放入你要顯示的內容，例如圖片或文字 -->
+    <h3>評分細項說明</h3>
+    <img src="{% static 'images/student_score.jpg' %}" alt="評分細項說明" style="display: block; margin: auto;">
+</div>
+
+<!-- 側邊攔切換按鈕 -->
+<div id="sidebarToggle">評分細項說明</div>
+
+<!-- JavaScript 控制側邊欄與按鈕的開關 -->
+<script src="{% static 'js/sidebar.js' %}"></script>
