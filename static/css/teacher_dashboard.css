@@ -1,0 +1,6 @@
+.card {
+    background: linear-gradient(135deg, #f0f9ff, #cfe0fc); /* 藍色漸層背景 */
+    border: none;
+    border-radius: 15px; /* 增加圓角 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 陰影效果 */
+}

@@ -1,28 +1,24 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}學生排行榜{% endblock %}
-
 {% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
 <div class="container mt-5">
-    <h1 class="text-center mb-4">學生排行榜</h1>
-
+    <h2 id="rankingTitle" class="mb-4" style="font-family:微軟正黑體; font-weight: bold;">學生排行榜-出題數</h2>
     <!-- 選項卡按鈕 -->
-    <div class="text-center mb-4">
-        <button class="btn btn-outline-primary" onclick="showTab('tab-questions')">出題排行榜</button>
-        <button class="btn btn-outline-secondary" onclick="showTab('tab-scores')">總分數排行榜</button>
+    <div class="text-center mb-3">
+        <button id="questionRanking" class="btn btn-outline-primary" onclick="showTab('tab-questions')">出題排行榜</button>
+        <button id="scoreRanking" class="btn btn-outline-secondary" onclick="showTab('tab-scores')">總分數排行榜</button>
     </div>
-
     <!-- 出題排行榜 -->
     <div id="tab-questions" class="ranking-tab">
-        <h3 class="text-center mb-4">出題排行榜</h3>
-        
         <!-- 顯示登入用戶的出題數量和排名 -->
         <div class="alert alert-info text-center">
             {% if user_question_count %}
                 <p>您的排名：<strong>{{ user_question_count.rank }}</strong></p>
                 <p>您的出題數量：<strong>{{ user_question_count.question_count }}</strong></p>
             {% else %}
-                <p>您目前尚未創建任何題目。</p>
+                <p>目前無排行榜資料</p>
             {% endif %}
         </div>
         
@@ -58,11 +54,8 @@
             </table>
         </div>
     </div>
-
     <!-- 總分數排行榜 -->
     <div id="tab-scores" class="ranking-tab" style="display: none;">
-        <h3 class="text-center mb-4">總分數排行榜</h3>
-        
         <!-- 顯示登入用戶的總分數和排名 -->
         <div class="alert alert-info text-center">
             {% if user_total_score %}
@@ -105,12 +98,9 @@
             </table>
         </div>
     </div>
-
     <div class="text-center mt-4">
         <a href="{% url 'Index' %}" class="btn btn-primary">返回首頁</a>
     </div>
 </div>
-
-<script src="{% static "js/ranking.js" %}"></script>
-
+<script src="{% static 'js/ranking.js' %}"></script>
 {% endblock %}

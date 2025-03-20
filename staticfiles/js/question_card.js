@@ -1,35 +1,28 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // 限制描述顯示行數
-    var descriptions = document.querySelectorAll('[id^="description-"]');
-    descriptions.forEach(function(descriptionElement) {
-        descriptionElement.style.display = '-webkit-box';
-        descriptionElement.style.webkitBoxOrient = 'vertical';
-        descriptionElement.style.webkitLineClamp = '5';
-        descriptionElement.style.overflow = 'hidden';
-
-        // 如果內容不足 5 行，則添加換行符填充顯示空間
-        var lineHeight = parseFloat(window.getComputedStyle(descriptionElement).lineHeight);
-        var minHeight = lineHeight * 5;
-        while (descriptionElement.offsetHeight < minHeight) {
-            descriptionElement.innerText += '\n';
-        }
+$(document).ready(function () {
+    // 篩選科目功能
+    const descriptions = document.querySelectorAll('.custom-text');
+    descriptions.forEach(function(element) {
+    // 取得原始文字內容
+    const originalText = element.textContent;
+    // 用 <br> 替換空格，這裡會把所有空格都轉換成換行，如果只想轉換部分請調整規則
+    const newText = originalText.split(' ').join('\n');
+    // 更新元素內容
+    element.innerHTML = newText;
     });
 
+
     // 篩選難易度功能
-    var difficultyFilters = document.querySelectorAll('.difficulty-filter');
-    var questionItems = document.querySelectorAll('.question-item');
+    $('.difficulty-filter').on('click', function () {
+        var selectedDifficulty = $(this).data('difficulty');
 
-    difficultyFilters.forEach(function(filter) {
-        filter.addEventListener('click', function() {
-            var selectedDifficulty = this.getAttribute('data-difficulty');
+        $('.question-item').each(function () {
+            var itemDifficulty = $(this).data('difficulty');
 
-            questionItems.forEach(function(item) {
-                if (selectedDifficulty === 'all' || item.getAttribute('data-difficulty') === selectedDifficulty) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
+            if (selectedDifficulty === 'all' || itemDifficulty === selectedDifficulty) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
         });
     });
 });

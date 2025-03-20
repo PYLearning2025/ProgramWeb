@@ -2,8 +2,9 @@
 {% load static %}
 {% block title %}出題{% endblock %}
 {% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
 <div class="container mt-5">
-    <h2 class="text-center mb-4">更新題目</h2>
+    <h2 class="mb-4" style="font-family:微軟正黑體; font-weight: bold;">更新題目</h2>
     <form id="questionForm" method="POST">
         {% csrf_token %}
         <div class="row align-items-stretch">
@@ -65,9 +66,7 @@
         </div>
     </form>
 </div>
-
 <script> questionListUrl = "{% url 'UserQuestionHistoryList' %}"</script>
 <script src="{% static 'js/codespace.js' %}"></script>
 <script src="{% static 'js/question_update.js' %}"></script>
-
 {% endblock %}

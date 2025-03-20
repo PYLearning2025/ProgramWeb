@@ -50,6 +50,7 @@ urlpatterns = [
     path('question/question_review/<int:question_id>', questions_views.question_review, name='QuestionReview'),
     path('question/peer_assessment/', questions_views.peer_assessment_list, name='PeerAssessmentList'),
     path('question/peer_assessment/<int:question_id>/', questions_views.peer_assessment, name='PeerAssessment'),
+    path('question/peer_assessment/<int:question_id>/<int:reviewer_id>/', questions_views.peer_assessment, name='PeerAssessmentReviewer'),
     path('teacherdashboard/', questions_views.teacher_dashboard, name='TeacherDashboard'),
     path('ranking/', questions_views.student_ranking, name='Ranking'),
     path('chat/', questions_views.chat_view, name='Chat'),
