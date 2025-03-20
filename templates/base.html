@@ -28,6 +28,38 @@
 
     <!-- title -->
     <title>{% block title %}{% endblock %}</title>
+            // 登出按鈕觸發模態框
+            const logoutButton = document.querySelector('.logout-btn');
+
+            const modal = document.querySelector('.modal');
+            const modalContent = document.querySelector('.modal-content');
+            const closeModal = () => modal.style.display = 'none';
+
+            const yesButton = document.querySelector('.yes-btn');
+            const noButton = document.querySelector('.no-btn');
+
+            // 顯示登出確認的模態框
+            logoutButton.addEventListener('click', function (e) {
+                e.preventDefault(); // 防止表單提交
+                modal.style.display = 'flex';
+            });
+
+            // 點擊 "是" 登出
+            yesButton.addEventListener('click', function () {
+                window.location.href = "{% url 'Logout' %}";
+            });
+
+            // 點擊 "否" 或關閉模態框
+            noButton.addEventListener('click', closeModal);
+
+            // 點擊模態框外部區域也可以關閉模態框
+            window.addEventListener('click', function (event) {
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
 </head>
 
 <!-- body -->
@@ -74,18 +106,21 @@
             {% include 'sidebars/main.html' %}
         {% endif %}
         {% include 'sidebars/chat.html' %}
-    </main>
 
-    <!-- 登出確認框 -->
-    <div class="modal">
-        <div class="modal-content">
-            <h3>是否確定登出?</h3>
-            <div class="modal-buttons">
-                <button class="yes-btn">是</button>
-                <button class="no-btn">否</button>
+        <!-- 登出確認模態框 -->
+        <div class="modal">
+            <div class="modal-content">
+                <h3>是否確定登出?</h3>
+                <div class="modal-buttons">
+                    <button class="yes-btn">是</button>
+                    <button class="no-btn">否</button>
+                </div>
             </div>
         </div>
-    </div>
+    </main>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 </body>
 
 <!-- footer -->
