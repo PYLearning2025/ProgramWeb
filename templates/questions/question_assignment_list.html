@@ -19,7 +19,7 @@
       <div class="container my-4">
         <div class="row row-cols-1 row-cols-md-3 g-4">
           {% for question in questions %}
-          <div class="col">
+          <div class="col question-item data-difficulty="{{ question.difficulty }}"">
             <div class="card fixed-card shadow-sm border-0 uniform-bg" style="font-family: '微軟正黑體';">
               <div class="card-body">
                 <h5 class="card-title text-center m-0">
