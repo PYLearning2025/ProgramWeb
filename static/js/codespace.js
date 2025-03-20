@@ -1,11 +1,11 @@
-document.addEventListener('DOMContentLoaded', function () {
-    var textarea = document.getElementById("answer-editor");
+$(function(){
+    var textarea = $("#answer-editor");
 
-    if (textarea) {
-        var status = textarea.getAttribute("data-status") || "";
+    if (textarea.length) {
+        var status = textarea.data("status") || "";
 
         // 初始化 CodeMirror
-        var editor = CodeMirror.fromTextArea(textarea, {
+        var editor = CodeMirror.fromTextArea(textarea[0], {
             lineNumbers: true,
             mode: "python",
             indentUnit: 4,
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         // 若 status 為 "submitted"，設定唯讀模式
-        if (status.trim().toLowerCase() === "submitted") {
+        if ($.trim(status).toLowerCase() === "submitted") {
             editor.setOption("readOnly", "nocursor"); // 禁用輸入 & 游標
         }
 

@@ -2,11 +2,14 @@
 {% load static %}
 {% block title %}出題{% endblock %}
 {% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/question.css' %}">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
 <div class="container mt-5">
-    <h2 class="text-center mb-4">出題區</h2>
+    <h2 class="text-center mb-5" style="font-family: 微軟正黑體; color: #343a40; font-weight: bold;">出題區</h2>
     <form id="question-form" method="POST", action="{% url 'QuestionCreate' %}">
         {% csrf_token %}
-        <div class="row align-items-stretch" style="height: 100%;"> <!-- 確保左右對齊 -->
+        <div class="row align-items-stretch other-h"> <!-- 確保左右對齊 -->
             <!-- 左側的表單區塊 -->
             <div class="col-md-6 left-side">
                 <div class="mb-3">
@@ -50,7 +53,7 @@
             </div>
             <!-- 右側的答案區塊 -->
             <div class="col-md-6 right-side">
-                <div class="mb-3" style="height: 100%;">
+                <div class="mb-3 ans-h">
                     <label for="answer" class="form-label">{{ form.answer.label }}</label>
                     <div class="answer-box">
                         <!-- 替換原本的 {{ form.answer }} 為 textarea 用於初始化 CodeMirror -->
@@ -64,8 +67,8 @@
             <button type="button" id="submit-btn" class="btn btn-primary btn-lg">提交</button>
         </div>
     </form>
-    <script> questionCreateUrl = "{% url 'QuestionCreate' %}"; </script>
-    <script src="{% static 'js/codespace.js' %}"></script>
-    <script src="{% static 'js/question_submit.js' %}"></script>
 </div>
+<script> questionCreateUrl = "{% url 'QuestionCreate' %}"; </script>
+<script src="{% static 'js/codespace.js' %}"></script>
+<script src="{% static 'js/question_submit.js' %}"></script>
 {% endblock %}

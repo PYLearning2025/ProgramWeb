@@ -2,6 +2,8 @@
 {% block title %}首頁{% endblock %}
 {% block content %}
 {% load static %}
+<link rel="stylesheet" href="{% static 'css/cards.css' %}">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
 <div class="container mt-5">
   <div class="row">
     <h2 class="mb-4" style="font-family:微軟正黑體; font-weight: bold;">所有題目</h2>
@@ -13,19 +15,29 @@
     </div>
     <div id="questions-container" class="row">
       {% if questions %}
-        {% for question in questions %}
-          <div class="col-md-4 mb-4 question-item" data-difficulty="{{ question.difficulty }}">
-              <div class="card h-100 shadow-sm">
-                  <a href="{% url 'QuestionDetail' question.id %}" class="btn">
-                      <div class="card-body">
-                          <h5 class="card-title" style="font-family:微軟正黑體;">{{ question.title }}</h5>
-                          <p class="card-text" style="font-family:微軟正黑體; font-size:12pt; color:gray; text-align: left; white-space: pre-wrap;" id="description-{{ question.id }}">{{ question.description }}</p>
-                          <p class="text-muted position-absolute bottom-0 end-0 m-2" style="font-size: 12pt;">出題:{{ question.creator.name }}</p>
-                      </div>
-                  </a>
+        <div class="container my-4">
+          <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for question in questions %}
+            <div class="col">
+              <div class="card fixed-card shadow-sm border-0 uniform-bg" style="font-family: '微軟正黑體';">
+                <div class="card-body">
+                  <h5 class="card-title text-center m-0">
+                    <a href="{% url 'QuestionDetail' question.id %}" class="stretched-link text-black text-decoration-none">
+                      {{ question.title }}
+                    </a>
+                  </h5>
+                  <p class="card-text m-0 custom-text">
+                    {{ question.description|linebreaks }}
+                  </p>
+                </div>
+                <div class="card-footer bg-transparent border-0 text-end">
+                  <p class="text-black m-0">出題：{{ question.creator.name }}</p>
+                </div>
               </div>
+            </div>
+            {% endfor %}
           </div>
-        {% endfor %}
+        </div>
       {% endif %}
     </div>
   </div>

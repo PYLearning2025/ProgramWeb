@@ -72,6 +72,11 @@ nav ul li a {
     position: relative;
 }
 
+nav ul li :hover{
+    /* 黃色 */
+    color: #FFD700 !important;
+}
+
 nav ul li a::before,
 nav ul li a::after {
     content: '';
@@ -145,16 +150,6 @@ nav ul li a:hover::after {
     color: white;
 }
 
-.logout-btn {
-    background-color: #fff;
-    color: #000;
-    border: 1px solid #000;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-size: 1rem;
-    text-decoration: none;
-}
-
 .form {
     background-color: rgb(212, 214, 215);
     padding: 10px;
@@ -221,6 +216,27 @@ textarea {
 
 .CodeMirror.cm-s-default {
     height: 1000px; 
+}
+
+.difficulty-btn{
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-title-words{
+    font-family:微軟正黑體;
+}
+
+.card-content-words{
+    font-family:微軟正黑體;
+    font-size:12pt;
+    color:gray;
+    text-align: left;
+    white-space: pre-wrap;
+}
+
+.card-creater-words{
+    font-family:微軟正黑體;
+    font-size:12pt;
 }
 
 @media (max-width: 768px) {

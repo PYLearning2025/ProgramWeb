@@ -1,0 +1,25 @@
+/* 動態調整佈局及文字換行設定 */
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-rows: auto;
+    gap: 1rem;
+}
+
+.break-word {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+.card-title, .card-text {
+    font-family: 微軟正黑體;
+}
+
+.card-title {
+    font-weight: bold;
+}
+
+.subtitle-bold {
+    font-weight: bold;
+}
