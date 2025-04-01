@@ -30,7 +30,7 @@ if os.path.exists(dotenv_path):
 SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = os.environ['WEBSITE_HOSTNAME'].split(',')  # 允許的主機名稱列表
 # CSRF_TRUSTED_ORIGINS = os.environ['WEBSITE_HOSTNAME'].split(',')  # CSRF信任的來源列表
