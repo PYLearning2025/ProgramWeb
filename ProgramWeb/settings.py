@@ -33,7 +33,7 @@ SECRET_KEY = os.environ['SECRET_KEY']
 DEBUG = False
 
 ALLOWED_HOSTS = os.environ['WEBSITE_HOSTNAME'].split(',')  # 允許的主機名稱列表
-CSRF_TRUSTED_ORIGINS = os.environ['WEBSITE_HOSTNAME'].split(',')  # CSRF信任的來源列表
+# CSRF_TRUSTED_ORIGINS = os.environ['WEBSITE_HOSTNAME'].split(',')  # CSRF信任的來源列表
 # CSRF_COOKIE_SAMESITE = 'None'  # CSRF Cookie的SameSite屬性設置為None
 
 # Application definition
