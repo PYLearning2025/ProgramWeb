@@ -12,8 +12,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from dotenv import load_dotenv
+import dotenv
 import os
-import secrets
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,15 +22,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
+dotenv_path = os.path.join(BASE_DIR, '.env')
+if os.path.exists(dotenv_path):
+    load_dotenv(dotenv_path)
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', default=secrets.token_urlsafe(nbytes=64))
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = [os.getenv('CSRF_TRUSTED_ORIGINS') if os.getenv('CSRF_TRUSTED_ORIGINS') else 'http://localhost:8000']
+ALLOWED_HOSTS = os.environ['WEBSITE_HOSTNAME'].split(',')  # 允許的主機名稱列表
+CSRF_TRUSTED_ORIGINS = os.environ['WEBSITE_HOSTNAME'].split(',')  # CSRF信任的來源列表
+# CSRF_COOKIE_SAMESITE = 'None'  # CSRF Cookie的SameSite屬性設置為None
 
 # Application definition
 AUTH_USER_MODEL = 'accounts.Student'
@@ -46,6 +51,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -53,7 +59,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'ProgramWeb.urls'
@@ -88,14 +93,22 @@ WSGI_APPLICATION = 'ProgramWeb.wsgi.application'
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',  #PostgreSQL
+#         'NAME': os.getenv('DATABASE_NAME'),  #資料庫名稱
+#         'USER': os.getenv('DATABASE_USER'),  #資料庫帳號
+#         'PASSWORD': os.getenv('DATABASE_PASSWORD'),  #資料庫密碼
+#         'HOST': os.getenv('DATABASE_HOST'),  #Server(伺服器)位址
+#     }
+# }
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',  #PostgreSQL
-        'NAME': os.getenv('DATABASE_NAME'),  #資料庫名稱
-        'USER': os.getenv('DATABASE_USER'),  #資料庫帳號
-        'PASSWORD': os.getenv('DATABASE_PASSWORD'),  #資料庫密碼
-        'HOST': os.getenv('DATABASE_HOST'),  #Server(伺服器)位址
-    }
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL'),
+        conn_max_age=600,
+        ssl_require=True,
+    )
 }
 
 # Password validation
@@ -133,9 +146,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / "static"]
-STATIC_ROOT = BASE_DIR / "staticfiles"
-
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
