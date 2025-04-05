@@ -32,7 +32,8 @@ SECRET_KEY = os.environ['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = os.environ['WEBSITE_HOSTNAME']  # 允許的主機名稱列表
+# ALLOWED_HOSTS = os.environ['WEBSITE_HOSTNAME']  # 允許的主機名稱列表
+ALLOWED_HOSTS = ['https://programweb.onrender.com/']
 # CSRF_TRUSTED_ORIGINS = os.environ['WEBSITE_HOSTNAME'].split(',')  # CSRF信任的來源列表
 # CSRF_COOKIE_SAMESITE = 'None'  # CSRF Cookie的SameSite屬性設置為None
 
