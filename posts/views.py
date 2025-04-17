@@ -454,17 +454,18 @@ def teacher_dashboard(request):
 # 學生排行榜
 def student_ranking(request):
     """
-    學生排行榜
-    Returns:
-    HttpResponse: 顯示學生排行榜
+    學生排行榜（排除 superuser，superuser 另設預設值顯示）
     """
     if get_function_status('create_questions'):
         return redirect('Close')
-    # 獲取當前使用者
+
     user = request.user
-    # 獲取所有學生的出題數量與排名
+
+    # 排除 superuser 的出題數與排名
     students_with_question_count = (
-        Student.objects.annotate(
+        Student.objects
+        .filter(is_superuser=False)
+        .annotate(
             question_count=Count('created_questions'),
             rank=Window(
                 expression=DenseRank(),
@@ -472,18 +473,12 @@ def student_ranking(request):
             )
         ).order_by('rank')
     )
-    # 獲取當前使用者的出題數量與排名
-    user_question_count = None
-    for student in students_with_question_count:
-        if student.id == user.id:
-            user_question_count = {
-                'question_count': student.question_count,
-                'rank': student.rank
-            }
-            break
-    # 獲取所有學生的總分數與排名
+
+    # 排除 superuser 的總分與排名
     students_with_scores = (
-        Student.objects.annotate(
+        Student.objects
+        .filter(is_superuser=False)
+        .annotate(
             total_score=Sum(
                 Case(
                     When(answers__question__difficulty='hard', then=20),
@@ -499,15 +494,32 @@ def student_ranking(request):
             )
         ).order_by('rank')
     )
-    # 獲取當前使用者的總分數與排名
-    user_total_score = None
-    for student in students_with_scores:
-        if student.id == user.id:
+
+    # 決定目前使用者的資料
+    user_question_count = {
+        'question_count': 0,
+        'rank': '-'
+    }
+    if not user.is_superuser:
+        student = next((s for s in students_with_question_count if s.id == user.id), None)
+        if student:
+            user_question_count = {
+                'question_count': student.question_count,
+                'rank': student.rank
+            }
+
+    user_total_score = {
+        'total_score': 0,
+        'rank': '-'
+    }
+    if not user.is_superuser:
+        student = next((s for s in students_with_scores if s.id == user.id), None)
+        if student:
             user_total_score = {
                 'total_score': student.total_score,
                 'rank': student.rank
             }
-            break
+
     return render(request, 'questions/ranking.html', {
         'students_with_question_count': students_with_question_count,
         'students_with_scores': students_with_scores,
