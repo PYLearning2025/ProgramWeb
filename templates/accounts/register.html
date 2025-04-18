@@ -1,9 +1,6 @@
 {% extends "accounts/AccountsBase.html" %}
-
 {% block title %}註冊{% endblock %}
-
 {% block content %}
-
 <div class="center">
 	<h1>註冊</h1>
 	<form method="post" id="register-form">
@@ -50,5 +47,30 @@
 		已經是會員?<a href="{% url 'Login'%}">&nbsp;登入</a>
 	</div>
 </div>
-
+<script>
+$(document).ready(function() {
+	// 接收JsonResponse並處理
+	$("#register-form").submit(function(event) {
+		event.preventDefault(); // 防止表單的默認提交行為
+		var formData = $(this).serialize(); // 獲取表單數據
+		$.ajax({
+			type: "POST",
+			url: "{% url 'Register' %}",
+			data: formData,
+			dataType: "json",
+			success: function(response) {
+				if (response.status == "success") {
+					alert("註冊成功！");
+					window.location.href = "{% url 'Login' %}"; // 重定向到登入頁面
+				} else {
+					alert("註冊失敗：" + response.message);
+				}
+			},
+			error: function(xhr, status, error) {
+				alert("發生錯誤：" + error);
+			}
+		});
+	});
+});
+</script>
 {% endblock %}

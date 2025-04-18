@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from accounts.models import Student
+from django.core.exceptions import ValidationError
+import re
 
 class RegisterForm(UserCreationForm):
     class Meta:
@@ -13,8 +15,8 @@ class RegisterForm(UserCreationForm):
     )
 
     email = forms.EmailField(
-        label="電子郵件",
-        widget=forms.EmailInput(attrs={'class': 'form-control'})
+        label="學校電子郵件",
+        widget=forms.EmailInput(attrs={'class': 'form-control'}),
     )
     
     name = forms.CharField(
@@ -36,27 +38,26 @@ class RegisterForm(UserCreationForm):
         label="密碼確認",
         widget=forms.PasswordInput(attrs={'class': 'form-control'})
     )
+    
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
 
-# class RegisterForm(UserCreationForm):
-#     username = forms.CharField(
-#         label="帳號",
-#         widget=forms.TextInput(attrs={'class': 'form-control'})
-#     )
+        # 首字s，中間為學號9個數字，尾端@stu.nute.edu.tw
+        pattern = r'^s\d{9}@stu\.ntue\.edu\.tw$'
+        if not re.match(pattern, email):
+            raise ValidationError("請輸入有效的學校email格式")
 
-#     email = forms.EmailField(
-#         label="電子郵件",
-#         widget=forms.EmailInput(attrs={'class': 'form-control'})
-#     )
+        return email
+    
+    def clean_student_id(self):
+        student_id = self.cleaned_data.get('student_id')
 
-#     password1 = forms.CharField(
-#         label="密碼",
-#         widget=forms.PasswordInput(attrs={'class': 'form-control'})
-#     )
+        # 學號格式：9個數字
+        pattern = r'^\d{9}$'
+        if not re.match(pattern, student_id):
+            raise ValidationError("請輸入有效的學號格式")
 
-#     password2 = forms.CharField(
-#         label="密碼確認",
-#         widget=forms.PasswordInput(attrs={'class': 'form-control'})
-#     )
+        return student_id
 
 class LoginForm(forms.Form):
 
