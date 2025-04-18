@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from accounts.models import Student
@@ -50,13 +50,26 @@ def register(request):
     form = RegisterForm()
     if request.method == "POST":
         form = RegisterForm(request.POST)
+        
         if form.is_valid():
-            user = form.save()
+            # 帳號只能由英文及數字符號組成，且長度在4-20字元之間
+            username = request.POST.get("username")
+            email = request.POST.get("email")
+            if not username.isalnum() or len(username) < 4 or len(username) > 20:
+                return JsonResponse({'status': 'error', 'message': '帳號只能由英文及數字符號組成，且長度在4-20字元之間！'})
+            if Student.objects.filter(username=username).exists():
+                return JsonResponse({'status': 'error', 'message': '帳號已存在！'})
+            if Student.objects.filter(email=email).exists():
+                return JsonResponse({'status': 'error', 'message': 'Email已存在！'})
+            
+            form.save()
             return HttpResponse('<script>alert("註冊成功！"); window.location.href = "/login";</script>')
         else:
             message = ''
-            for error in form.errors:
-                message += (error + "\n")
+            for field, errors in form.errors.items():
+                for err in errors:
+                    message += f"{err}\n"
+            return JsonResponse({'status': 'error', 'message': message})
 
     return render(request, 'accounts/register.html', locals())
 
