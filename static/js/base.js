@@ -19,9 +19,9 @@ $(document).ready(function () {
 
     // 登出按鈕觸發確認框
     const $logoutButton = $('.logout-btn');
-    const $modal = $('.modal');
+    const $modal = $('.logout-modal');
     const closeModal = function () {
-        $modal.css('display', 'none');
+        $modal.fadeOut(200);
     };
 
     const $yesButton = $('.yes-btn');
@@ -30,19 +30,17 @@ $(document).ready(function () {
     // 顯示登出確認框
     $logoutButton.on('click', function (e) {
         e.preventDefault(); // 防止表單提交
-        $modal.css('display', 'block');
+        $modal.css('display', 'flex').fadeIn(200);
     });
-
-    // 點擊 "是" 登出
     $yesButton.on('click', function () {
-        window.location.href = "{% url 'Logout' %}";
+        $(this).closest('form').submit();
     });
 
     // 點擊 "否" 或關閉確認框
     $noButton.on('click', closeModal);
 
     // 點擊確認框外部區域也可以關閉確認框
-    $(window).on('click', function (event) {
+    $modal.on('click', function (event) {
         if ($(event.target).is($modal)) {
             closeModal();
         }

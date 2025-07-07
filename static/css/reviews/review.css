@@ -1,0 +1,28 @@
+/* 讓body不可滾動，固定高度 */
+html, body {
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* 卡片內容可滾動，並限制最大高度 */
+.card-body {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+/* 移除卡片底部多餘空間 */
+.card.h-100 {
+  height: 100%;
+}
+
+/* 寬度小於767px時，body恢復可滾動 */
+@media (max-width: 767px) {
+  html, body {
+    height: auto;
+    overflow: auto;
+  }
+  .card-body {
+    max-height: none;
+    padding: 1rem;
+  }
+}
