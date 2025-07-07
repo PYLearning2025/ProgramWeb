@@ -1,130 +1,124 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<!-- head -->
+<html lang="zh-TW">
+    
 <head>
     {% load static %}
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
-    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
-    <!-- 引入 CodeMirror 的 CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/codemirror.min.css">
-    <!-- 引入 CodeMirror 的程式碼模式 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/theme/dracula.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/codemirror.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/mode/python/python.min.js"></script> 
-    <!-- 引入 highlight.js 和預設的語法高亮樣式 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
-
-    <!-- 引入 Base 的 JavaScript -->
-    <script src="{% static 'js/base.js' %}"></script>
-
-    <!-- title -->
-    <title>{% block title %}{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+    
+    <!-- 先加載 jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <!-- 再加載 Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"></script>
+    
     <script>
-        $(document).ready(function () {
-            // 登出按鈕觸發模態框
-            const logoutButton = document.querySelector('.logout-btn');
-
-            const modal = document.querySelector('.modal');
-            const modalContent = document.querySelector('.modal-content');
-            const closeModal = () => modal.style.display = 'none';
-
-            const yesButton = document.querySelector('.yes-btn');
-            const noButton = document.querySelector('.no-btn');
-
-            // 顯示登出確認的模態框
-            logoutButton.addEventListener('click', function (e) {
-                e.preventDefault(); // 防止表單提交
-                modal.style.display = 'flex';
-            });
-
-            // 點擊 "是" 登出
-            yesButton.addEventListener('click', function () {
-                window.location.href = "{% url 'Logout' %}";
-            });
-
-            // 點擊 "否" 或關閉模態框
-            noButton.addEventListener('click', closeModal);
-
-            // 點擊模態框外部區域也可以關閉模態框
-            window.addEventListener('click', function (event) {
-                if (event.target === modal) {
-                    closeModal();
-                }
-            });
-        });
+        var require = { paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' } };
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+    <!-- 自定義 JS 放在最後 -->
+    <script src="{% static 'js/base.js' %}"></script>
+    {% block extra_css %}{% endblock %}
+    {% block extra_js %}{% endblock %}
+    <title>{% block title %}{% endblock %}</title>
 </head>
 
-<!-- body -->
 <body>
-    <header>
-        <h1><a href="{% url 'Index' %}" style="text-decoration: none; color: inherit;">程式設計平台</a></h1>
-        <button class="navbar-toggler"></button>
-        <nav>
-            <ul>
-                <!-- 標頭選單 -->
-                <li><a href="{% url 'Index' %}">首頁</a></li>
-                <li><a href="{% url 'UserDashboard' %}">個人主頁</a></li>
-                <li><a href="{% url 'QuestionCreate' %}">出題區</a></li>
-                <li><a href="{% url 'QuestionAssignment' %}">作業區</a></li>
-                <li><a href="{% url 'UserQuestionHistoryList' %}">出題記錄</a></li>
-                <li><a href="{% url 'PeerAssessmentList' %}">題目互評</a></li>
-                <li><a href="{% url 'TeacherDashboard' %}">老師公告區</a></li>
-                <li><a href="{% url 'Ranking' %}">學生出題排行榜</a></li>
-            </ul>
-        </nav>
-        <div>
-            <!-- 登入/登出按鈕 -->
-            {% if user.is_authenticated %}
-                <a href="#" class="btn btn-warning logout-btn">Log Out</a>
-            {% else %}
-                <a href="{% url 'Index' %}" class="btn logout-btn">Login</a>
-                <a href="#" class="btn logout-btn">Sign-up</a>
-            {% endif %}
-        </div>
-    </header>
-
-    <main>
-        <section class="carousel">
-        </section>
-
-        <!-- content -->
-        {% block content %}{% endblock %}
-        <!-- sidebar and chatbot -->
-        {% if request.path == '/question/peer_assessment/' %}
-            {% include 'sidebars/peer_assessment.html' %}
-        {% elif request.resolver_match.url_name == 'PeerAssessment' %}
-            {% include 'sidebars/peer_assessment.html' %}
-        {% elif request.path == '/'%}
-            {% include 'sidebars/main.html' %}
-        {% endif %}
-        {% include 'sidebars/chat.html' %}
-
-        <!-- 登出確認模態框 -->
-        <div class="modal">
-            <div class="modal-content">
-                <h3>是否確定登出?</h3>
-                <div class="modal-buttons">
-                    <button class="yes-btn">是</button>
-                    <button class="no-btn">否</button>
+    <nav class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-3">
+            <div class="nav-content">
+                <div class="nav-brand">
+                    <a href="{% url 'Index' %}" class="brand-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="brand-text">程式設計平台</span>
+                    </a>
+                </div>
+                <div class="nav-links">
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'Index' %}" class="nav-link">首頁</a>
+                    <a href="{% url 'NewsList' %}" class="nav-link">最新消息</a>
+                    <a href="#" class="nav-link">課程</a>
+                    <a href="#" class="nav-link">練習題</a>
+                    <a href="#" class="nav-link">討論區</a>
+                    {% else %}
+                    <a href="{% url 'NewsList' %}" class="nav-link">最新消息</a>
+                    {% endif %}
+                </div>
+                <div class="nav-auth">
+                    {% if user.is_authenticated %}
+                        <div class="dropdown d-inline">
+                            <button class="btn btn-auth dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ user.username }}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'UserInfo' %}">
+                                        <i class="bi bi-person-circle me-2"></i>個人資訊
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'UserinfoQuestions' %}">
+                                        <i class="bi bi-question-circle me-2"></i>我的問題紀錄
+                                    </a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a class="dropdown-item logout-btn" href="{% url 'Logout' %}" tabindex="-1">
+                                        <i class="bi bi-box-arrow-right me-2"></i>登出
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'Login' %}" class="btn-auth login-btn">登入</a>
+                        <a href="{% url 'Register' %}" class="btn-auth register-btn">註冊</a>
+                    {% endif %}
+                    <button class="mobile-menu-btn" id="menuBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
                 </div>
             </div>
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="mobile-menu">
+                {% if user.is_authenticated %}
+                <a href="{% url 'Index' %}" class="mobile-link">首頁</a>
+                <a href="#" class="mobile-link">課程</a>
+                <a href="#" class="mobile-link">練習題</a>
+                <a href="#" class="mobile-link">討論區</a>
+                {% else %}
+                <a href="{% url 'NewsList' %}" class="mobile-link">最新消息</a>
+                {% endif %}
+            </div>
         </div>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
     </main>
 
-    <!-- Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    <!-- 登出確認模態框 -->
+    <div class="logout-modal">
+        <div class="logout-modal-content">
+            <h3>是否確定登出?</h3>
+            <form method="post" action="{% url 'Logout' %}" class="logout-form">
+                {% csrf_token %}
+                <div class="logout-modal-buttons">
+                    <button type="submit" class="yes-btn">是</button>
+                    <button type="button" class="no-btn">否</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
-
-<!-- footer -->
-<footer>&copy; 2025 程式設計平台</footer>
 </html>

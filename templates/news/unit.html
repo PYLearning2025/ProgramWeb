@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ news_unit.title }}{% endblock %}
+
+{% block extra_css %}
+<!-- Bootstrap 已在 base.html 載入則可省略 -->
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/news/unit.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container my-5" style="max-width:900px;">
+    <div class="card shadow">
+        {% if news_unit.image %}
+        <img src="{{ news_unit.image.url }}" class="card-img-top" alt="{{ news_unit.title }}">
+        {% endif %}
+        <div class="card-body">
+            <h3 class="card-title">{{ news_unit.title }}</h3>
+            <div class="mb-2">
+                <span class="badge bg-primary">{{ news_unit.category.c_name }}</span>
+                {% for tag in news_unit.tags.all %}
+                    <span class="badge bg-secondary">{{ tag.c_name }}</span>
+                {% endfor %}
+            </div>
+            <ul class="list-inline text-muted small mb-3">
+                <li class="list-inline-item">公告人：{{ news_unit.author.user_info.name }}</li>
+                <li class="list-inline-item">發布時間：{{ news_unit.published_date|date:"Y-m-d H:i" }}</li>
+                <li class="list-inline-item">瀏覽：{{ news_unit.views_count }}</li>
+            </ul>
+            <div class="card-text">
+                {{ news_unit.content|safe }}
+            </div>
+            {% if news_unit.source_name and news_unit.source_url %}
+                <div class="list-inline-item">
+                    來源：<a href="{{ news_unit.source_url }}" target="_blank">{{ news_unit.source_name }}</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
