@@ -1,7 +1,7 @@
 from django.db import models
 from questions.models import Question
 
-# AI 難度評估與回饋模型
+# AI難度評估與回饋模型
 class DifficultyEvaluation(models.Model):
     question = models.ForeignKey(Question, related_name='difficulties', on_delete=models.CASCADE)
     difficulty_score = models.TextField(verbose_name="AI 難度分數")
