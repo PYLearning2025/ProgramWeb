@@ -22,6 +22,7 @@ import news.views as news_views
 import questions.views as questions_views
 import answers.views as answers_views
 import reviews.views as reviews_views
+import ai.views as ai_views
 from django.conf import settings
 from django.conf.urls.static import static
 from userinfos.views import update_profile_img
@@ -58,5 +59,8 @@ urlpatterns = [
 
     # -------- Reviews URLs --------
     path("reviews/create/<int:question_id>/", reviews_views.create_review, name="CreateReview"),
+
+    # -------- AI URLs --------
+    path("ai/questionanalysis/", ai_views.analyze_question, name="QuestionAnalysis"),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
