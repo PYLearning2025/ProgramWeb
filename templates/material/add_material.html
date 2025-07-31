@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }} - 程式設計平台{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-3">
+    <!-- 頁面標題 -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">
+            <i class="bi bi-file-earmark-plus text-success me-2"></i>
+            新增教材
+        </h1>
+        <a href="{% url 'ManageMaterials' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>
+            返回管理頁面
+        </a>
+    </div>
+
+    <!-- 新增表單 -->
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-file-earmark-text text-success me-2"></i>
+                        新增教材
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <!-- 教材標題 -->
+                        <div class="mb-3">
+                            <label for="title" class="form-label">
+                                <i class="bi bi-file-text me-1"></i>
+                                教材標題 <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="title" 
+                                   name="title" 
+                                   placeholder="請輸入教材標題..."
+                                   required>
+                        </div>
+
+                        <!-- 教材描述 -->
+                        <div class="mb-3">
+                            <label for="content" class="form-label">
+                                <i class="bi bi-chat-text me-1"></i>
+                                教材描述
+                            </label>
+                            <textarea class="form-control" 
+                                      id="content" 
+                                      name="content" 
+                                      rows="3" 
+                                      placeholder="請輸入教材描述..."></textarea>
+                        </div>
+
+                        <div class="row">
+                            <!-- 選擇單元 -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="unit" class="form-label">
+                                        <i class="bi bi-folder me-1"></i>
+                                        所屬單元 <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-select" id="unit" name="unit" required>
+                                        <option value="">請選擇單元</option>
+                                        {% for unit in units %}
+                                            <option value="{{ unit.id }}">{{ unit.title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- 選擇類型 -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="category" class="form-label">
+                                        <i class="bi bi-tags me-1"></i>
+                                        教材類型
+                                    </label>
+                                    <select class="form-select" id="category" name="category">
+                                        <option value="">請選擇類型（可選）</option>
+                                        {% for category in categories %}
+                                            <option value="{{ category.id }}">{{ category.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 排序順序 -->
+                        <div class="mb-3">
+                            <label for="order" class="form-label">
+                                <i class="bi bi-sort-numeric-up me-1"></i>
+                                排序順序
+                            </label>
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="order" 
+                                   name="order" 
+                                   min="1" 
+                                   placeholder="請輸入排序順序（數字越小越前面）">
+                            <div class="form-text">留空將自動排在最後</div>
+                        </div>
+
+                        <!-- PDF檔案 -->
+                        <div class="mb-3">
+                            <label for="pdf_file" class="form-label">
+                                <i class="bi bi-file-earmark-pdf me-1"></i>
+                                PDF檔案 <span class="text-danger">*</span>
+                            </label>
+                            <input type="file" 
+                                   class="form-control" 
+                                   id="pdf_file" 
+                                   name="pdf_file" 
+                                   accept=".pdf"
+                                   required>
+                            <div class="form-text">請選擇PDF檔案上傳（必填）</div>
+                        </div>
+
+                        <!-- 按鈕群組 -->
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{% url 'ManageMaterials' %}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle me-1"></i>
+                                取消
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-circle me-1"></i>
+                                新增教材
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 提示資訊 -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <i class="bi bi-lightbulb text-warning me-2"></i>
+                        使用說明
+                    </h6>
+                    <ul class="mb-0">
+                        <li>教材標題、所屬單元和PDF檔案為必填項目</li>
+                        <li>教材描述可詳細說明學習重點和內容</li>
+                        <li>類型分類有助於教材的組織和管理</li>
+                        <li>只支援上傳PDF格式的教材檔案</li>
+                        <li>排序順序決定教材在單元中的顯示順序</li>
+                    </ul>
+                </div>
+            </div>
+
+            {% if not units %}
+            <div class="alert alert-warning mt-4">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <strong>注意：</strong>目前沒有可用的單元。請先
+                <a href="{% url 'AddUnit' %}" class="alert-link">新增單元</a>
+                後再新增教材。
+            </div>
+            {% endif %}
+
+            {% if not categories %}
+            <div class="alert alert-info mt-4">
+                <i class="bi bi-info-circle me-2"></i>
+                <strong>提示：</strong>目前沒有教材類型。您可以先
+                <a href="{% url 'AddCategory' %}" class="alert-link">新增類型</a>
+                來更好地組織教材。
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

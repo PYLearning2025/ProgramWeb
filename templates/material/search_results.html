@@ -1,0 +1,252 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }} - 程式設計平台{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-3">
+    <div class="row">
+        <div class="col-12">
+            <!-- 頁面標題和搜尋框 -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="mb-0">
+                        <i class="bi bi-search text-primary me-2"></i>
+                        教材搜尋
+                    </h1>
+                    {% if query %}
+                        <p class="text-muted mt-2 mb-0">
+                            搜尋關鍵字: <span class="fw-medium text-primary">"{{ query }}"</span>
+                        </p>
+                    {% endif %}
+                </div>
+                
+                <!-- 返回按鈕 -->
+                <a href="{% url 'MaterialList' %}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left me-1"></i>
+                    返回教材區
+                </a>
+            </div>
+
+            <!-- 搜尋框 -->
+            <div class="row mb-4">
+                <div class="col-lg-6">
+                    <form method="get" action="{% url 'SearchMaterials' %}" class="d-flex">
+                        <input type="text" name="q" class="form-control me-2" 
+                               placeholder="搜尋教材標題、內容或單元名稱..." 
+                               value="{{ query }}" style="height: 45px;">
+                        <button type="submit" class="btn btn-primary" style="width: 120px;">
+                            <i class="bi bi-search me-1"></i>
+                            搜尋
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 搜尋結果 -->
+            {% if query %}
+                {% if results %}
+                    <!-- 結果統計 -->
+                    <div class="mb-4">
+                        <div class="alert alert-info border-0">
+                            <i class="bi bi-info-circle me-2"></i>
+                            找到 <strong>{{ results.paginator.count }}</strong> 個相關教材
+                            {% if results.has_other_pages %}
+                                (第 {{ results.number }} 頁，共 {{ results.paginator.num_pages }} 頁)
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- 搜尋結果列表 -->
+                    <div class="row">
+                        {% for material in results %}
+                            <div class="col-lg-6 col-xl-4 mb-4">
+                                <div class="card h-100 shadow-sm border-0">
+                                    <div class="card-body d-flex flex-column">
+                                        <!-- 教材標題 -->
+                                        <h5 class="card-title mb-2">
+                                            <i class="bi bi-file-earmark-pdf-fill text-danger me-2"></i>
+                                            <a href="{% url 'MaterialDetail' material.id %}" 
+                                               class="text-decoration-none text-dark">
+                                                {{ material.title }}
+                                            </a>
+                                        </h5>
+
+                                        <!-- 所屬單元 -->
+                                        <p class="text-muted mb-2">
+                                            <i class="bi bi-folder-fill me-1"></i>
+                                            <a href="{% url 'UnitDetail' material.unit.id %}" 
+                                               class="text-decoration-none text-muted">
+                                                {{ material.unit.title }}
+                                            </a>
+                                        </p>
+                                        
+                                        <!-- 教材描述 -->
+                                        {% if material.content %}
+                                            <p class="card-text text-muted flex-grow-1 small">
+                                                {{ material.content|truncatewords:25 }}
+                                            </p>
+                                        {% endif %}
+                                        
+                                        <!-- 教材資訊 -->
+                                        <div class="mt-auto">
+                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                <small class="text-muted">
+                                                    <i class="bi bi-person me-1"></i>
+                                                    {{ material.creator.username }}
+                                                </small>
+                                                <small class="text-muted">
+                                                    <i class="bi bi-calendar3 me-1"></i>
+                                                    {{ material.created_at|date:"m/d" }}
+                                                </small>
+                                            </div>
+                                            
+                                            <!-- 操作按鈕 -->
+                                            <div class="d-grid gap-2">
+                                                <a href="{% url 'MaterialDetail' material.id %}" 
+                                                   class="btn btn-outline-primary btn-sm">
+                                                    <i class="bi bi-eye me-1"></i>
+                                                    查看詳細
+                                                </a>
+                                                {% if material.pdf_file %}
+                                                    <a href="{% url 'MaterialDownload' material.id %}" 
+                                                       class="btn btn-primary btn-sm">
+                                                        <i class="bi bi-download me-1"></i>
+                                                        下載教材
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- 分頁控制 -->
+                    {% if results.has_other_pages %}
+                        <nav aria-label="搜尋結果分頁" class="mt-5">
+                            <ul class="pagination justify-content-center">
+                                <!-- 第一頁 -->
+                                {% if results.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?q={{ query }}&page=1" aria-label="第一頁">
+                                            <i class="bi bi-chevron-double-left"></i>
+                                        </a>
+                                    </li>
+                                    <!-- 上一頁 -->
+                                    <li class="page-item">
+                                        <a class="page-link" href="?q={{ query }}&page={{ results.previous_page_number }}" aria-label="上一頁">
+                                            <i class="bi bi-chevron-left"></i>
+                                        </a>
+                                    </li>
+                                {% endif %}
+
+                                <!-- 頁碼 -->
+                                {% for num in results.paginator.page_range %}
+                                    {% if results.number == num %}
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ num }}</span>
+                                        </li>
+                                    {% elif num > results.number|add:'-3' and num < results.number|add:'3' %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?q={{ query }}&page={{ num }}">{{ num }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+
+                                <!-- 下一頁 -->
+                                {% if results.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?q={{ query }}&page={{ results.next_page_number }}" aria-label="下一頁">
+                                            <i class="bi bi-chevron-right"></i>
+                                        </a>
+                                    </li>
+                                    <!-- 最後一頁 -->
+                                    <li class="page-item">
+                                        <a class="page-link" href="?q={{ query }}&page={{ results.paginator.num_pages }}" aria-label="最後一頁">
+                                            <i class="bi bi-chevron-double-right"></i>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+
+                        <!-- 分頁資訊 -->
+                        <div class="text-center text-muted mt-3">
+                            <small>
+                                第 {{ results.number }} 頁，共 {{ results.paginator.num_pages }} 頁
+                                (共 {{ results.paginator.count }} 個搜尋結果)
+                            </small>
+                        </div>
+                    {% endif %}
+
+                {% else %}
+                    <!-- 無搜尋結果 -->
+                    <div class="text-center py-5">
+                        <div class="mb-4">
+                            <i class="bi bi-search display-1 text-muted"></i>
+                        </div>
+                        <h3 class="text-muted">沒有找到相關教材</h3>
+                        <p class="text-muted mb-4">
+                            找不到包含「<span class="fw-medium">{{ query }}</span>」的教材，<br>
+                            請嘗試其他關鍵字或檢查拼寫
+                        </p>
+                        
+                        <!-- 搜尋建議 -->
+                        <div class="row justify-content-center">
+                            <div class="col-md-6">
+                                <div class="card bg-light border-0">
+                                    <div class="card-body">
+                                        <h6 class="card-title">
+                                            <i class="bi bi-lightbulb me-2"></i>
+                                            搜尋建議
+                                        </h6>
+                                        <ul class="list-unstyled mb-0 text-muted small">
+                                            <li>• 嘗試使用不同的關鍵字</li>
+                                            <li>• 檢查關鍵字的拼寫</li>
+                                            <li>• 使用更常見的詞彙</li>
+                                            <li>• 減少關鍵字數量</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% else %}
+                <!-- 初始搜尋頁面 -->
+                <div class="text-center py-5">
+                    <div class="mb-4">
+                        <i class="bi bi-search display-1 text-primary"></i>
+                    </div>
+                    <h3 class="text-primary">教材搜尋</h3>
+                    <p class="text-muted mb-4">
+                        請在上方搜尋框中輸入關鍵字，<br>
+                        搜尋教材標題、內容或單元名稱
+                    </p>
+                    
+                    <!-- 搜尋範圍說明 -->
+                    <div class="row justify-content-center">
+                        <div class="col-md-6">
+                            <div class="card bg-light border-0">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="bi bi-info-circle me-2"></i>
+                                        搜尋範圍
+                                    </h6>
+                                    <ul class="list-unstyled mb-0 text-muted small">
+                                        <li>• 教材標題</li>
+                                        <li>• 教材內容描述</li>
+                                        <li>• 單元名稱</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
