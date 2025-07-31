@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }} - 程式設計平台{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-3">
+    <div class="row">
+        <div class="col-12">
+            <!-- 頁面標題與導航 -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <!-- 返回按鈕 -->
+                    <a href="{% url 'MaterialList' %}" class="btn btn-outline-secondary btn-sm mb-2">
+                        <i class="bi bi-arrow-left me-1"></i>
+                        返回教材區
+                    </a>
+                    <h1 class="mb-0">
+                        <i class="bi bi-folder-open-fill text-primary me-2"></i>
+                        {{ unit.title }}
+                    </h1>
+                    {% if unit.description %}
+                        <p class="text-muted mt-2 mb-0">{{ unit.description }}</p>
+                    {% endif %}
+                </div>
+                
+                <!-- 單元資訊 -->
+                <div class="text-end">
+                    <small class="text-muted d-block">
+                        <i class="bi bi-file-text me-1"></i>
+                        共 {{ materials.paginator.count }} 個教材
+                    </small>
+                    <small class="text-muted d-block">
+                        <i class="bi bi-clock me-1"></i>
+                        建立於 {{ unit.created_at|date:"Y年m月d日" }}
+                    </small>
+                </div>
+            </div>
+
+            <!-- 教材列表 -->
+            {% if materials %}
+                <div class="row">
+                    {% for material in materials %}
+                    <div class="col-lg-6 col-xl-4 mb-4">
+                        <div class="card h-100 shadow-sm border-0">
+                            <div class="card-body d-flex flex-column">
+                                <!-- 教材標題 -->
+                                <h5 class="card-title mb-3">
+                                    <i class="bi bi-file-earmark-pdf-fill text-danger me-2"></i>
+                                    {{ material.title }}
+                                </h5>
+                                
+                                <!-- 教材描述 -->
+                                {% if material.content %}
+                                    <p class="card-text text-muted flex-grow-1">
+                                        {{ material.content|truncatewords:20 }}
+                                    </p>
+                                {% endif %}
+                                
+                                <!-- 教材資訊 -->
+                                <div class="mt-auto">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <small class="text-muted">
+                                            <i class="bi bi-person me-1"></i>
+                                            {{ material.creator.username }}
+                                        </small>
+                                        <small class="text-muted">
+                                            <i class="bi bi-calendar3 me-1"></i>
+                                            {{ material.created_at|date:"m/d" }}
+                                        </small>
+                                    </div>
+                                    
+                                    <!-- 操作按鈕 -->
+                                    <div class="d-grid gap-2">
+                                        <a href="{% url 'MaterialDetail' material.id %}" 
+                                           class="btn btn-outline-primary btn-sm">
+                                            <i class="bi bi-eye me-1"></i>
+                                            查看詳細
+                                        </a>
+                                        <a href="{% url 'MaterialDownload' material.id %}" 
+                                           class="btn btn-primary btn-sm">
+                                            <i class="bi bi-download me-1"></i>
+                                            下載教材
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- 分頁控制 -->
+                {% if materials.has_other_pages %}
+                    <nav aria-label="教材分頁" class="mt-5">
+                        <ul class="pagination justify-content-center">
+                            <!-- 第一頁 -->
+                            {% if materials.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1" aria-label="第一頁">
+                                        <i class="bi bi-chevron-double-left"></i>
+                                    </a>
+                                </li>
+                                <!-- 上一頁 -->
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ materials.previous_page_number }}" aria-label="上一頁">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            <!-- 頁碼 -->
+                            {% for num in materials.paginator.page_range %}
+                                {% if materials.number == num %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ num }}</span>
+                                    </li>
+                                {% elif num > materials.number|add:'-3' and num < materials.number|add:'3' %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            <!-- 下一頁 -->
+                            {% if materials.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ materials.next_page_number }}" aria-label="下一頁">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </a>
+                                </li>
+                                <!-- 最後一頁 -->
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ materials.paginator.num_pages }}" aria-label="最後一頁">
+                                        <i class="bi bi-chevron-double-right"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+
+                    <!-- 分頁資訊 -->
+                    <div class="text-center text-muted mt-3">
+                        <small>
+                            第 {{ materials.number }} 頁，共 {{ materials.paginator.num_pages }} 頁
+                            (共 {{ materials.paginator.count }} 個教材)
+                        </small>
+                    </div>
+                {% endif %}
+
+            {% else %}
+                <!-- 空狀態 -->
+                <div class="text-center py-5">
+                    <div class="mb-4">
+                        <i class="bi bi-file-earmark-x display-1 text-muted"></i>
+                    </div>
+                    <h3 class="text-muted">此單元尚無教材</h3>
+                    <p class="text-muted">請聯繫管理員上傳教材內容</p>
+                    <div class="mt-4">
+                        <a href="{% url 'MaterialList' %}" class="btn btn-outline-primary">
+                            <i class="bi bi-arrow-left me-1"></i>
+                            返回教材區
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
