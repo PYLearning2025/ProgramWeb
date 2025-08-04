@@ -51,7 +51,7 @@ def submit_answer(request):
     answer, created = Answer.objects.get_or_create(user=request.user, question=question)
     answer.answer = code
     answer.save()
-    return JsonResponse({'message': '答案已成功提交！'})
+    return JsonResponse({'message': '答案已成功提交！', 'redirect_url': '/questions/' + str(question.id) + '/'})
 
 def debug_answer(request):
     """實作debug功能"""
