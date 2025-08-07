@@ -139,11 +139,14 @@ function validateForm() {
                 }
                 $feedbackElement.show();
 
-                // 聚焦時移除錯誤狀態
-                monacoEditor.onDidFocusEditorText(() => {
-                    $monacoContainer.css("border-color", "#DDD");
-                    $feedbackElement.hide();
-                });
+                				// 聚焦時移除錯誤狀態 - 檢查是否已經綁定過
+				if (!monacoEditor._focusListenerBound) {
+					monacoEditor.onDidFocusEditorText(() => {
+						$monacoContainer.css("border-color", "#DDD");
+						$feedbackElement.hide();
+					});
+					monacoEditor._focusListenerBound = true;
+				}
             }
         }
 
@@ -225,13 +228,21 @@ function highlightInvalidField($field) {
 		$parentElement.append($feedbackElement);
 	}
 
-	// 添加聚焦時移除錯誤狀態
-	$field.on("focus", function () {
-		$(this).removeClass("is-invalid");
-		if ($feedbackElement) {
-			$feedbackElement.text("");
-		}
-	});
+	// 檢查是否已經綁定過 focus 事件監聽器
+	if (!$field.data("focus-listener-bound")) {
+		// 添加聚焦時移除錯誤狀態
+		$field.on("focus", function () {
+			$(this).removeClass("is-invalid");
+			const $parent = $(this).parent();
+			const $feedback = $parent.find(".invalid-feedback");
+			if ($feedback.length) {
+				$feedback.text("");
+			}
+		});
+		
+		// 標記已綁定事件監聽器
+		$field.data("focus-listener-bound", true);
+	}
 }
 
 // AI分析按鈕點擊事件
