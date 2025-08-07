@@ -22,6 +22,7 @@ def create_question(request):
             # 創建問題的歷史記錄
             history = QuestionHistory.objects.create(
                 question=question,
+                user=request.user,
                 title=question.title,
                 content=question.content,
                 level=question.level,
@@ -106,7 +107,7 @@ def question_update(request, question_id):
             # 創建新的問題歷史記錄
             history = QuestionHistory.objects.create(
                 question=updated_question,
-                # user=request.user,
+                user=request.user,
                 title=updated_question.title,
                 content=updated_question.content,
                 level=updated_question.level,
