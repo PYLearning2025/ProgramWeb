@@ -73,7 +73,7 @@
     <div id="questions-container" class="row g-4">
         {% if questions %}
             {% for question in questions %}
-            <div class="col-12 col-md-6 col-xl-4" data-level="{{ question.level }}" data-title="{{ question.title|lower }}" data-description="{{ question.description|lower }}">
+            <div class="col-12 col-md-6 col-xl-4" data-level="{{ question.level|escapejs }}" data-title="{{ question.title|lower|escapejs }}" data-description="{{ question.content|lower|escapejs }}">
                 <div class="card h-100 question-card">
                     <div class="card-body p-4">
                         <div class="d-flex justify-content-between align-items-start mb-3">

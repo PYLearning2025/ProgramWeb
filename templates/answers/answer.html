@@ -65,7 +65,7 @@
                             {% csrf_token %}
                             <input type="hidden" name="question_id" id="question_id" value="{{ question.id }}">
                             <div id="monaco-editor-container" class="flex-grow-1 d-flex flex-column">
-                                <div id="monaco-editor" class="flex-grow-1"></div>
+                                <div id="monaco-editor" class="flex-grow-1" role="textbox" aria-label="Code editor"></div>
                             </div>
                         </form>
                     </div>
