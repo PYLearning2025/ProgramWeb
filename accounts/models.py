@@ -1,13 +1,21 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-class Student(AbstractUser):
-    name = models.CharField(max_length=50, null=False)
-    student_id = models.CharField(max_length=9, null=False)
-    GENDER_CHOICES = (
-        ('M', '男性'),
-        ('F', '女性'),
-    )
-    email = models.EmailField(blank=True, null=True)
-    phone_number = models.CharField(max_length=10, blank=True, null=True)
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
+# 使用者登入用模型
+class User(AbstractUser):
+    email = models.EmailField(blank=True, null=False, unique=True)
+    level = models.IntegerField(default=0)
+    category = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, blank=True)
+    is_active = models.BooleanField(default=True)
+    last_login = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.username
+
+class Category(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    c_name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name

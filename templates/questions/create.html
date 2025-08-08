@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}建立題目{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/questions/create.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/questions/create.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="mb-4 gradient-bg rounded-3 px-4">
+        <h2 class="fw-bold mb-0 text-center">建立題目</h2>
+    </div>
+    <form method="post" id="questionForm" class="needs-validation" novalidate>
+        {% csrf_token %}
+        <div class="row align-items-stretch">
+            <!-- 左側：基本問題資訊 -->
+            <div class="col-md-6 d-flex flex-column">
+                <div class="mb-3">
+                    <label for="{{ form.title.id_for_label }}" class="form-label">{{ form.title.label }}</label>
+                    {{ form.title }}
+                    {% if form.title.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in form.title.errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.level.id_for_label }}" class="form-label">{{ form.level.label }}</label>
+                    {{ form.level }}
+                    {% if form.level.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in form.level.errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.content.id_for_label }}" class="form-label">{{ form.content.label }}</label>
+                    {{ form.content }}
+                    {% if form.content.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in form.content.errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.input_format.id_for_label }}" class="form-label">{{ form.input_format.label }}</label>
+                        {{ form.input_format }}
+                        {% if form.input_format.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.input_format.errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.output_format.id_for_label }}" class="form-label">{{ form.output_format.label }}</label>
+                        {{ form.output_format }}
+                        {% if form.output_format.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.output_format.errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.input_example.id_for_label }}" class="form-label">{{ form.input_example.label }}</label>
+                        {{ form.input_example }}
+                        {% if form.input_example.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.input_example.errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.output_example.id_for_label }}" class="form-label">{{ form.output_example.label }}</label>
+                        {{ form.output_example }}
+                        {% if form.output_example.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.output_example.errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="checkbox-group p-2" style="max-height: 300px; overflow-y: auto;">
+                            <label for="{{ form.topics.id_for_label }}" class="form-label">{{ form.topics.label }} <small class="text-muted">(最少1個，最多3個)</small></label>
+                            {{ form.topics }}
+                        </div>
+                        {% if form.topics.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.topics.errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="checkbox-group p-2" style="max-height: 300px; overflow-y: auto;">
+                            <label for="{{ form.tags.id_for_label }}" class="form-label">{{ form.tags.label }} <small class="text-muted">(最少1個，最多5個)</small></label>
+                            {{ form.tags }}
+                        </div>
+                        {% if form.tags.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.tags.errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <!-- 右側：答案和額外資訊 -->
+            <div class="col-md-6 d-flex flex-column">
+                <div class="mb-3">
+                    <label for="{{ form.answer.id_for_label }}" class="form-label">{{ form.answer.label }}</label>
+                    <div id="monaco-editor" style="height: 600px; border: 3px solid #DDD; border-radius: 5px;"></div>
+                    {{ form.answer }}
+                    {% if form.answer.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in form.answer.errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.hint.id_for_label }}" class="form-label">{{ form.hint.label }}</label>
+                    {{ form.hint }}
+                    {% if form.hint.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in form.hint.errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.reference.id_for_label }}" class="form-label">{{ form.reference.label }}</label>
+                    {{ form.reference }}
+                    {% if form.reference.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in form.reference.errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- 表單的額外說明 -->
+                <div class="card mb-3 mt-auto">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="card-title mb-0" id="ai-analysis-title">注意事項</h5>
+                    </div>
+                    <div class="card-body" id="ai-analysis-content">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">題目提交後需經過審核才會顯示</li>
+                            <li class="list-group-item">難度級別決定題目的分類和推薦順序</li>
+                            <li class="list-group-item">提供清晰的輸入輸出格式有助於學習</li>
+                            <li class="list-group-item">參考資料請提供有效的 URL</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{% url 'Index' %}" class="btn btn-secondary me-2">取消</a>
+            <button type="submit" class="btn btn-primary">提交問題</button>
+            <button type="button" class="btn btn-success ms-2" id="ai-analysis-button">AI分析</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

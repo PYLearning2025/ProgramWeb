@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ question.title }}-評分{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/reviews/review.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/reviews/review.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-3">
+  <div class="row">
+    <div class="col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">題目資訊 Question Info</h4>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">{{ question.title }}</h5>
+          <p class="card-text"><strong>內容 Content：<br></strong>{{ question.content|linebreaksbr }}</p>
+          <p class="card-text"><strong>難度 Level：<br></strong>{{ question.get_level_display }}</p>
+          <p class="card-text"><strong>主題 Topics：<br></strong>
+            {% for topic in question.topics.all %}
+              <span class="badge bg-info text-dark">{{ topic.c_name }}</span>
+            {% empty %}
+              <span class="text-muted">無</span>
+            {% endfor %}
+          </p>
+          <p class="card-text"><strong>輸入格式 Input Format：<br></strong>{{ question.input_format }}</p>
+          <p class="card-text"><strong>輸出格式 Output Format：<br></strong>{{ question.output_format }}</p>
+          <p class="card-text"><strong>輸入範例 Input Example：<br></strong><pre>{{ question.input_example }}</pre></p>
+          <p class="card-text"><strong>輸出範例 Output Example：<br></strong><pre>{{ question.output_example }}</pre></p>
+          <p class="card-text"><strong>標籤 Tags：</strong>
+            {% for tag in question.tags.all %}
+              <span class="badge bg-secondary">{{ tag.tag }}</span>
+            {% empty %}
+              <span class="text-muted">無</span>
+            {% endfor %}
+          </p>
+          {% if question.hint %}
+          <p class="card-text"><strong>提示 Hint：<br></strong>{{ question.hint }}</p>
+          {% endif %}
+          {% if question.reference %}
+          <p class="card-text"><strong>參考資料 Reference：</strong><a href="{{ question.reference }}" target="_blank">{{ question.reference }}</a></p>
+          {% endif %}
+          {% if question.answer %}
+          <p class="card-text"><strong>答案 Answer：</strong><pre>{{ question.answer }}</pre></p>
+          {% endif %}
+          {# 如需顯示答案，取消註解 #}
+          {# <p class="card-text"><strong>答案 Answer：</strong><pre>{{ question.answer }}</pre></p> #}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-header bg-success text-white">
+          <h4 class="mb-0">評分表單 Review Form</h4>
+        </div>
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label class="form-label">題目正確性 (0-5)</label>
+              <select class="form-select" name="question_accuracy_score" required>
+                {% for i in "012345" %}
+                <option value="{{ forloop.counter0 }}">{{ forloop.counter0 }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">題目複雜度 (0-5)</label>
+              <select class="form-select" name="complexity_score" required>
+                {% for i in "012345" %}
+                <option value="{{ forloop.counter0 }}">{{ forloop.counter0 }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">練習性 (0-5)</label>
+              <select class="form-select" name="practice_score" required>
+                {% for i in "012345" %}
+                <option value="{{ forloop.counter0 }}">{{ forloop.counter0 }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">答案正確性 (0-5)</label>
+              <select class="form-select" name="answer_accuracy_score" required>
+                {% for i in "012345" %}
+                <option value="{{ forloop.counter0 }}">{{ forloop.counter0 }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">可讀性 (0-5)</label>
+              <select class="form-select" name="readability_score" required>
+                {% for i in "012345" %}
+                <option value="{{ forloop.counter0 }}">{{ forloop.counter0 }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">對題目的建議</label>
+              <textarea class="form-control" name="question_advice" rows="3" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">對答案的建議</label>
+              <textarea class="form-control" name="answer_advice" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">送出評分 Submit Review</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

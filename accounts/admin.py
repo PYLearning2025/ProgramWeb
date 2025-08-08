@@ -1,10 +1,17 @@
 from django.contrib import admin
-from .models import Student
+from .models import User, Category
 
-class StudentAdmin(admin.ModelAdmin):
-	list_display = ("username", "student_id", "email", "is_staff", "name", "phone_number")
-	list_filter = ("gender",)
-	search_fields=('id',)
-	ordering = ("id",)
+class UserAdmin(admin.ModelAdmin):
+    readonly_fields = ('last_login', 'created_at')
+    fieldsets = (
+        (None, {
+            'fields': ['username', 'email', 'level', 'category', 'is_active', 'last_login', 'created_at']
+        }),
+    )
 
-admin.site.register(Student, StudentAdmin)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ['name', 'c_name']
+    search_fields = ['name', 'c_name']
+
+admin.site.register(User, UserAdmin)
+admin.site.register(Category, CategoryAdmin)

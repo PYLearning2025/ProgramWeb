@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}個人問題紀錄{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/questions/detail.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/questions/detail.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="fw-bold mb-4 text-center">{{ question.title }}</h2>
+    <div class="row mb-4">
+        <div class="col-md-9">
+            <h3 class="fw-bold mb-3">問題內容</h3>
+            <form class="card p-4 shadow-sm">
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">{{ field.label }}</label>
+                        {{ field }}
+                    </div>
+                {% endfor %}
+            </form>
+        </div>
+        <div class="col-md-3">
+            {% if question.user == request.user %}
+                <h3 class="fw-bold mb-3 text-primary">歷史紀錄</h3>
+            {% else %}
+                <h3 class="fw-bold mb-3 text-secondary">操作</h3>
+            {% endif %}
+            {% if question.user == request.user %}
+                <div class="card p-4 shadow-sm border-primary">
+                    <ul class="list-group">
+                        {% for record in history %}
+                            <a href="{% url 'QuestionDetailVersion' question.id record.version %}" class="btn btn-primary shadow-sm my-1" style="position: relative; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)';" onmouseout="this.style.transform='scale(1)';">
+                                版本 {{ record.version }}
+                            </a>
+                        {% empty %}
+                            <li class="list-group-item text-muted">無歷史紀錄</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            <div class="row mt-4">
+                <div class="col-12 mb-3">
+                    <div class="d-flex justify-content-between">
+                        {% if question.user == request.user %}
+                            <a href="{% url 'QuestionUpdate' question.id %}" class="btn btn-primary">
+                                <i class="bi bi-pencil-square me-1"></i>編輯問題
+                            </a>
+                        {% elif question.user != request.user %}
+                            {% if answer %}
+                                <a href="/" class="btn btn-success disabled">
+                                    <i class="bi bi-pencil-square me-1"></i>回答題目
+                                </a>
+                            {% else %}
+                                <a href="{% url 'CreateAnswer' question.id %}" class="btn btn-success">
+                                    <i class="bi bi-pencil-square me-1"></i>回答題目
+                                </a>
+                            {% endif %}
+                        {% endif %}
+                        <a href="{% url 'UserinfoQuestions' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i>返回問題列表
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="d-flex justify-content-between">
+                        {% if question.user != request.user %}
+                            {% if answer %}
+                                {% if review %}
+                                    <a href="/" class="btn btn-secondary disabled">
+                                        <i class="bi bi-pencil-square me-1"></i>同儕互評
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'CreateReview' question.id %}" class="btn btn-primary">
+                                        <i class="bi bi-pencil-square me-1"></i>同儕互評
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                            
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
