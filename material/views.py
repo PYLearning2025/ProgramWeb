@@ -2,7 +2,6 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
 from .models import Unit, Material, MaterialCategory
@@ -116,8 +115,9 @@ def check_duplicate_pdf(uploaded_file):
 @staff_member_required
 def manage_materials(request):
     units = Unit.objects.all().order_by('order')
-    latest_materials = Material.objects.all().order_by('-created_at')
-    total_materials = Material.objects.all() 
+    # 只顯示最近的20個教材，提升頁面載入速度
+    latest_materials = Material.objects.select_related('unit', 'category', 'creator').order_by('-created_at')[:20]
+    total_materials_count = Material.objects.count()
     categories = MaterialCategory.objects.all().order_by('name')
     
     page_title = '教材管理'
@@ -139,17 +139,26 @@ def add_unit(request):
             
             # 檢查是否已存在同名單元
             if Unit.objects.filter(title=title).exists():
-                messages.error(request, f'單元「{title}」已存在！')
+                return JsonResponse({
+                    'success': False, 
+                    'message': f'單元「{title}」已存在！'
+                })
             else:
                 unit = Unit.objects.create(
                     title=title,
                     description=description,
                     order=int(order)
                 )
-                messages.success(request, f'單元「{unit.title}」新增成功！')
-                return redirect('ManageMaterials')
+                return JsonResponse({
+                    'success': True,
+                    'message': f'單元「{unit.title}」新增成功！',
+                    'redirect': 'ManageMaterials'
+                })
         else:
-            messages.error(request, '單元標題不能為空！')
+            return JsonResponse({
+                'success': False,
+                'message': '單元標題不能為空！'
+            })
     
     # 取得下一個建議的順序
     last_unit = Unit.objects.order_by('-order').first()
@@ -180,7 +189,10 @@ def add_material(request):
             
             # 檢查是否已存在同名教材
             if Material.objects.filter(title=title, unit=unit).exists():
-                messages.error(request, f'教材「{title}」在此單元中已存在！')
+                return JsonResponse({
+                    'success': False,
+                    'message': f'教材「{title}」在此單元中已存在！'
+                })
             else:
                 # 檢查是否已存在相同內容的PDF檔案
                 duplicate_material = check_duplicate_pdf(pdf_file)
@@ -198,21 +210,38 @@ def add_material(request):
                 
                 # 根據是否有重複檔案顯示不同的成功訊息
                 if duplicate_material:
-                    messages.warning(request, 
-                        f'教材「{title}」新增成功！但偵測到此PDF檔案與現有教材「{duplicate_material.title}」（{duplicate_material.unit.title}）內容相同。')
+                    return JsonResponse({
+                        'success': True,
+                        'message': f'教材「{title}」新增成功！但偵測到此PDF檔案與現有教材「{duplicate_material.title}」（{duplicate_material.unit.title}）內容相同。',
+                        'redirect': 'ManageMaterials'
+                    })
                 else:
-                    messages.success(request, f'教材「{title}」新增成功！')
-                
-                return redirect('ManageMaterials')
+                    return JsonResponse({
+                        'success': True,
+                        'message': f'教材「{title}」新增成功！',
+                        'redirect': 'ManageMaterials'
+                    })
         else:
             if not title:
-                messages.error(request, '教材標題不能為空！')
+                return JsonResponse({
+                    'success': False,
+                    'message': '教材標題不能為空！'
+                })
             elif not unit_id:
-                messages.error(request, '請選擇所屬單元！')
+                return JsonResponse({
+                    'success': False,
+                    'message': '請選擇所屬單元！'
+                })
             elif not pdf_file:
-                messages.error(request, '請上傳PDF檔案！')
+                return JsonResponse({
+                    'success': False,
+                    'message': '請上傳PDF檔案！'
+                })
             else:
-                messages.error(request, '教材標題、單元和PDF檔案都是必填項目！')
+                return JsonResponse({
+                    'success': False,
+                    'message': '教材標題、單元和PDF檔案都是必填項目！'
+                })
     
     units = Unit.objects.all().order_by('order')
     categories = MaterialCategory.objects.all().order_by('name')
@@ -229,17 +258,28 @@ def add_category(request):
         if name:
             # 檢查是否已存在同名類型
             if MaterialCategory.objects.filter(name=name).exists():
-                messages.error(request, f'類型「{name}」已存在！')
+                return JsonResponse({
+                    'success': False,
+                    'message': f'類型「{name}」已存在！'
+                })
             else:
                 category = MaterialCategory.objects.create(
                     name=name,
                     description=description
                 )
-                messages.success(request, f'類型「{category.name}」新增成功！')
-                return redirect('ManageMaterials')
+                return JsonResponse({
+                    'success': True,
+                    'message': f'類型「{category.name}」新增成功！',
+                    'redirect': 'ManageMaterials'
+                })
         else:
-            messages.error(request, '類型名稱不能為空！')
+            return JsonResponse({
+                'success': False,
+                'message': '類型名稱不能為空！'
+            })
     
+    # 傳遞現有類型給模板顯示
+    categories = MaterialCategory.objects.all().order_by('name')
     page_title = '新增類型'
     return render(request, 'material/add_category.html', locals())
 
@@ -251,8 +291,11 @@ def delete_material(request, material_id):
     if request.method == 'POST':
         material_title = material.title
         material.delete()
-        messages.success(request, f'教材「{material_title}」已成功刪除！')
-        return redirect('ManageMaterials')
+        return JsonResponse({
+            'success': True,
+            'message': f'教材「{material_title}」已成功刪除！',
+            'redirect': 'ManageMaterials'
+        })
     
     page_title = f'刪除教材 - {material.title}'
     return render(request, 'material/delete_confirm.html', locals())
@@ -265,11 +308,17 @@ def delete_unit(request, unit_id):
     if request.method == 'POST':
         unit_title = unit.title
         if unit.materials.exists():
-            messages.error(request, f'無法刪除單元「{unit_title}」，因為其下還有教材！請先刪除所有教材。')
+            return JsonResponse({
+                'success': False,
+                'message': f'無法刪除單元「{unit_title}」，因為其下還有教材！請先刪除所有教材。'
+            })
         else:
             unit.delete()
-            messages.success(request, f'單元「{unit_title}」已成功刪除！')
-        return redirect('ManageMaterials')
+            return JsonResponse({
+                'success': True,
+                'message': f'單元「{unit_title}」已成功刪除！',
+                'redirect': 'ManageMaterials'
+            })
     
     page_title = f'刪除單元 - {unit.title}'
     return render(request, 'material/delete_confirm.html', locals())
@@ -282,8 +331,11 @@ def delete_category(request, category_id):
     if request.method == 'POST':
         category_name = category.name
         category.delete()
-        messages.success(request, f'類型「{category_name}」已成功刪除！')
-        return redirect('ManageMaterials')
+        return JsonResponse({
+            'success': True,
+            'message': f'類型「{category_name}」已成功刪除！',
+            'redirect': 'ManageMaterials'
+        })
     
     page_title = f'刪除類型 - {category.name}'
     return render(request, 'material/delete_confirm.html', locals())
@@ -301,17 +353,26 @@ def edit_unit(request, unit_id):
         if title:
             # 檢查是否已存在同名單元
             if Unit.objects.filter(title=title).exclude(id=unit.id).exists():
-                messages.error(request, f'單元「{title}」已存在！')
+                return JsonResponse({
+                    'success': False,
+                    'message': f'單元「{title}」已存在！'
+                })
             else:
                 unit.title = title
                 unit.description = description
                 if order:
                     unit.order = int(order)
                 unit.save()
-                messages.success(request, f'單元「{unit.title}」編輯成功！')
-                return redirect('ManageMaterials')
+                return JsonResponse({
+                    'success': True,
+                    'message': f'單元「{unit.title}」編輯成功！',
+                    'redirect': 'ManageMaterials'
+                })
         else:
-            messages.error(request, '單元標題不能為空！')
+            return JsonResponse({
+                'success': False,
+                'message': '單元標題不能為空！'
+            })
     
     page_title = f'編輯單元 - {unit.title}'
     return render(request, 'material/edit_unit.html', locals())
@@ -335,7 +396,10 @@ def edit_material(request, material_id):
 
             # 檢查是否已存在同名教材
             if Material.objects.filter(title=title, unit=unit).exclude(id=material.id).exists():
-                messages.error(request, f'教材「{title}」在此單元中已存在！')
+                return JsonResponse({
+                    'success': False,
+                    'message': f'教材「{title}」在此單元中已存在！'
+                })
             else:
                 material.title = title
                 material.content = content
@@ -347,10 +411,16 @@ def edit_material(request, material_id):
                         os.remove(material.pdf_file.path)
                     material.pdf_file = pdf_file
                 material.save()
-                messages.success(request, f'教材「{material.title}」編輯成功！')
-                return redirect('ManageMaterials')
+                return JsonResponse({
+                    'success': True,
+                    'message': f'教材「{material.title}」編輯成功！',
+                    'redirect': 'ManageMaterials'
+                })
         else:
-            messages.error(request, '教材標題和單元不能為空！')
+            return JsonResponse({
+                'success': False,
+                'message': '教材標題和單元不能為空！'
+            })
     
     units = Unit.objects.all().order_by('order')
     categories = MaterialCategory.objects.all().order_by('name')
@@ -369,15 +439,24 @@ def edit_category(request, category_id):
         if name:
             # 檢查是否已存在同名類型
             if MaterialCategory.objects.filter(name=name).exclude(id=category.id).exists():
-                messages.error(request, f'類型「{name}」已存在！')
+                return JsonResponse({
+                    'success': False,
+                    'message': f'類型「{name}」已存在！'
+                })
             else:
                 category.name = name
                 category.description = description
                 category.save()
-                messages.success(request, f'類型「{category.name}」編輯成功！')
-                return redirect('ManageMaterials')
+                return JsonResponse({
+                    'success': True,
+                    'message': f'類型「{category.name}」編輯成功！',
+                    'redirect': 'ManageMaterials'
+                })
         else:
-            messages.error(request, '類型名稱不能為空！')
+            return JsonResponse({
+                'success': False,
+                'message': '類型名稱不能為空！'
+            })
     
     categories = MaterialCategory.objects.all()
     page_title = f'編輯類型 - {category.name}'

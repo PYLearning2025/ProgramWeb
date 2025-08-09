@@ -47,16 +47,6 @@
 </style>
 
 <div class="container-fluid px-4 py-3">
-    <!-- 訊息顯示區域 -->
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        {% endfor %}
-    {% endif %}
-
     <!-- 頁面標題 -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="mb-0">
@@ -82,7 +72,7 @@
         <div class="col-md-4">
             <div class="card bg-success text-white">
                 <div class="card-body text-center">
-                    <h3 class="mb-0">{{ total_materials.count }}</h3>
+                    <h3 class="mb-0">{{ total_materials_count }}</h3>
                     <p class="mb-0">教材總數</p>
                 </div>
             </div>

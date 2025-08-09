@@ -110,7 +110,7 @@
 
                     <!-- 操作按鈕 -->
                     {% if not unit or not unit.materials.exists %}
-                    <form method="post" class="d-inline">
+                    <form method="post" class="d-inline" id="deleteForm">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-danger me-3">
                             <i class="bi bi-trash me-1"></i>
@@ -149,4 +149,38 @@
         </div>
     </div>
 </div>
+
+<script>
+const deleteForm = document.getElementById('deleteForm');
+if (deleteForm) {
+    deleteForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        
+        fetch(this.action || window.location.href, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                if (data.redirect) {
+                    window.location.href = "{% url 'ManageMaterials' %}";
+                }
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('發生錯誤，請稍後再試。');
+        });
+    });
+}
+</script>
 {% endblock %}
