@@ -50,7 +50,7 @@ $(document).ready(function() {
                 'csrfmiddlewaretoken': csrfToken
             },
             success: function(response) {
-                location.reload();
+                window.location.href = response.redirect_url;
             }
         });
     });

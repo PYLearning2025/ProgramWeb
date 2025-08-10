@@ -48,11 +48,11 @@ def analyze_question(request):
             )
             difficulty_content = completion.choices[0].message.content
             
-            # 將 AI 分析結果存到資料庫
-            difficulty_evaluation = DifficultyEvaluation.objects.create(
-                difficulty_score="待解析",  # 可以後續解析 difficulty_content 來提取具體分數
-                feedback=difficulty_content
-            )
+            # # 將 AI 分析結果存到資料庫
+            # difficulty_evaluation = DifficultyEvaluation.objects.create(
+            #     difficulty_score="待解析",  # 可以後續解析 difficulty_content 來提取具體分數
+            #     feedback=difficulty_content
+            # )
             
             return JsonResponse({'result': difficulty_content})
         except Exception as e:
