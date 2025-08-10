@@ -1,0 +1,80 @@
+/* Reports Form - 只保留必要的自定義樣式 */
+
+/* 檔案上傳區域美化 */
+.border.rounded-3.p-3.bg-light {
+    transition: all 0.2s ease;
+}
+
+.border.rounded-3.p-3.bg-light:hover {
+    border-color: #0d6efd !important;
+    background-color: #f8f9fa !important;
+}
+
+/* 表單驗證錯誤樣式增強 */
+.invalid-feedback {
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.invalid-feedback i {
+    color: #dc3545;
+}
+
+/* 按鈕懸停效果 */
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+}
+
+.btn-outline-secondary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
+}
+
+/* 卡片懸停效果 */
+.card.shadow.border-0.rounded-3 {
+    transition: all 0.3s ease;
+}
+
+.card.shadow.border-0.rounded-3:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* 響應式調整 */
+@media (max-width: 768px) {
+    .bg-primary.bg-gradient.text-white.rounded-3.p-4 {
+        padding: 1.5rem !important;
+    }
+    
+    .card-body.p-4 {
+        padding: 1.5rem !important;
+    }
+    
+    .d-flex.gap-2.justify-content-end {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* 載入狀態 */
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* 成功狀態 */
+.alert-success {
+    border-left: 4px solid #198754;
+}
+
+/* 錯誤狀態 */
+.alert-danger {
+    border-left: 4px solid #dc3545;
+}
