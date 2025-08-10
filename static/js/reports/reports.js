@@ -1,8 +1,4 @@
 $(document).ready(function() {
-    // 初始化變數
-    const maxSize = 5 * 1024 * 1024; // 5MB
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-    
     // 表單驗證初始化
     validateForm();
     
@@ -149,7 +145,7 @@ function showFormError(message) {
             'class': 'alert alert-danger mt-3 form-error-alert',
             'html': `<i class="bi bi-exclamation-triangle-fill me-1"></i>${message}`
         });
-        $('.gradient-bg').after($errorAlert);
+        $('.bg-primary.bg-gradient.text-white.rounded-3.p-4').after($errorAlert);
     } else {
         $errorAlert.html(`<i class="bi bi-exclamation-triangle-fill me-1"></i>${message}`);
     }
@@ -166,7 +162,7 @@ function showFileError(message) {
             'class': 'alert alert-danger mt-2 file-error-alert',
             'html': `<i class="bi bi-exclamation-triangle-fill me-1"></i>${message}`
         });
-        $('.attachment-upload-area').after($fileError);
+        $('#id_attachment').closest('.mb-4').after($fileError);
     } else {
         $fileError.html(`<i class="bi bi-exclamation-triangle-fill me-1"></i>${message}`);
     }
