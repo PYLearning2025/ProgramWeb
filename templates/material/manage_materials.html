@@ -1,0 +1,328 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }} - 程式設計平台{% endblock %}
+
+{% block content %}
+<style>
+.btn-xs {
+    padding: 0.25rem 0.4rem;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    border-radius: 0.2rem;
+}
+
+.table th {
+    white-space: nowrap;
+    vertical-align: middle;
+    border-bottom: 2px solid #dee2e6;
+    background-color: #f8f9fa;
+}
+
+.table td {
+    vertical-align: middle;
+    word-wrap: break-word;
+    border-top: 1px solid #dee2e6;
+}
+
+.table td:first-child {
+    font-weight: 500;
+}
+
+.table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.table th,
+.table td {
+    padding: 0.75rem;
+    text-align: left;
+}
+
+.table th:last-child,
+.table td:last-child {
+    text-align: center;
+}
+</style>
+
+<div class="container-fluid px-4 py-3">
+    <!-- 頁面標題 -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">
+            <i class="bi bi-gear text-primary me-2"></i>
+            教材管理
+        </h1>
+        <a href="{% url 'MaterialList' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>
+            返回教材區
+        </a>
+    </div>
+
+    <!-- 統計資訊卡片 -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h3 class="mb-0">{{ units.count }}</h3>
+                    <p class="mb-0">學習單元</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <h3 class="mb-0">{{ total_materials_count }}</h3>
+                    <p class="mb-0">教材總數</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-warning text-white">
+                <div class="card-body text-center">
+                    <h3 class="mb-0">{{ categories.count }}</h3>
+                    <p class="mb-0">教材類型</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 管理工具 -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-tools me-2"></i>
+                        管理工具
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- 新增功能按鈕 -->
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="d-grid">
+                                <a href="{% url 'AddUnit' %}" class="btn btn-primary">
+                                    <i class="bi bi-folder-plus me-2"></i>
+                                    新增單元
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-grid">
+                                <a href="{% url 'AddMaterial' %}" class="btn btn-success">
+                                    <i class="bi bi-file-earmark-pdf me-2"></i>
+                                    新增教材
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-grid">
+                                <a href="{% url 'AddCategory' %}" class="btn btn-warning">
+                                    <i class="bi bi-tags me-2"></i>
+                                    新增類型
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 單元管理 -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-folder2 text-primary me-2"></i>
+                        單元管理
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if units %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 25%;">標題</th>
+                                        <th style="width: 30%;">描述</th>
+                                        <th style="width: 10%;">順序</th>
+                                        <th style="width: 10%;">教材數</th>
+                                        <th style="width: 12%;">建立時間</th>
+                                        <th style="width: 13%;">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for unit in units %}
+                                    <tr>
+                                        <td>
+                                            <i class="bi bi-folder text-primary me-2"></i>
+                                            {{ unit.title }}
+                                        </td>
+                                        <td>{{ unit.description|truncatewords:8|default:"無描述" }}</td>
+                                        <td>{{ unit.order }}</td>
+                                        <td>{{ unit.materials.count }}</td>
+                                        <td>{{ unit.created_at|date:"m/d H:i" }}</td>
+                                        <td>
+                                            <a href="{% url 'EditUnit' unit.id %}" class="btn btn-sm btn-outline-warning me-1" title="編輯">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a href="{% url 'DeleteUnit' unit.id %}" class="btn btn-sm btn-outline-danger" title="刪除">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="bi bi-folder-plus display-4 text-muted"></i>
+                            <p class="text-muted mt-3">尚無單元</p>
+                            <a href="{% url 'AddUnit' %}" class="btn btn-primary">
+                                <i class="bi bi-plus-circle me-1"></i>
+                                新增第一個單元
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 教材管理 -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-file-earmark-text text-success me-2"></i>
+                        教材管理
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if latest_materials %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 25%;">標題</th>
+                                        <th style="width: 30%;">單元</th>
+                                        <th style="width: 10%;">類型</th>
+                                        <th style="width: 10%;">建立者</th>
+                                        <th style="width: 12%;">建立時間</th>
+                                        <th style="width: 13%;">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for material in latest_materials %}
+                                    <tr>
+                                        <td>
+                                            <i class="bi bi-file-earmark-pdf text-danger me-2"></i>
+                                            {{ material.title }}
+                                        </td>
+                                        <td>{{ material.unit.title }}</td>
+                                        <td>
+                                            {% if material.category %}
+                                                <span class="badge bg-secondary">{{ material.category.name }}</span>
+                                            {% else %}
+                                                <span class="text-muted">未分類</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ material.creator.username }}</td>
+                                        <td>{{ material.created_at|date:"m/d H:i" }}</td>
+                                        <td>
+                                            <a href="{% url 'EditMaterial' material.id %}" class="btn btn-sm btn-outline-warning me-1" title="編輯">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a href="{% url 'DeleteMaterial' material.id %}" class="btn btn-sm btn-outline-danger" title="刪除">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-3">
+                            <a href="{% url 'MaterialList' %}" class="btn btn-outline-primary">
+                                <i class="bi bi-list me-1"></i>
+                                查看所有教材
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="bi bi-inbox display-4 text-muted"></i>
+                            <p class="text-muted mt-3">尚無教材</p>
+                            <a href="{% url 'AddMaterial' %}" class="btn btn-success">
+                                <i class="bi bi-plus-circle me-1"></i>
+                                新增第一個教材
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 類型管理 -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-tags text-warning me-2"></i>
+                        類型管理
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if categories %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 25%;">名稱</th>
+                                        <th style="width: 62%;">描述</th>
+                                        <th style="width: 13%;">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for category in categories %}
+                                    <tr>
+                                        <td>
+                                            <i class="bi bi-tag text-warning me-2"></i>
+                                            {{ category.name }}
+                                        </td>
+                                        <td>{{ category.description|truncatewords:12|default:"無描述" }}</td>
+                                        <td>
+                                            <a href="{% url 'EditCategory' category.id %}" class="btn btn-sm btn-outline-warning me-1" title="編輯">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a href="{% url 'DeleteCategory' category.id %}" class="btn btn-sm btn-outline-danger" title="刪除">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="bi bi-tag-plus display-4 text-muted"></i>
+                            <p class="text-muted mt-3">尚無類型</p>
+                            <a href="{% url 'AddCategory' %}" class="btn btn-warning">
+                                <i class="bi bi-plus-circle me-1"></i>
+                                新增第一個類型
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

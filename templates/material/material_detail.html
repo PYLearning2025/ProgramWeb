@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }} - 程式設計平台{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-3">
+    <div class="row">
+        <div class="col-12">
+            <!-- 頁面導航 -->
+            <div class="mb-3">
+                <a href="{% url 'UnitDetail' material.unit.id %}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left me-1"></i>
+                    返回 {{ material.unit.title }}
+                </a>
+            </div>
+
+            <!-- 教材詳細資訊 -->
+            <div class="row">
+                <!-- 主要內容區 -->
+                <div class="col-lg-8 mb-4">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-primary text-white">
+                            <h1 class="card-title mb-0 h4">
+                                <i class="bi bi-file-earmark-pdf-fill me-2"></i>
+                                {{ material.title }}
+                            </h1>
+                        </div>
+                        <div class="card-body">
+                            <!-- 教材描述 -->
+                            {% if material.content %}
+                                <div class="mb-4">
+                                    <h5 class="text-secondary mb-3">
+                                        <i class="bi bi-file-text me-2"></i>
+                                        教材說明
+                                    </h5>
+                                    <div class="bg-light p-3 rounded">
+                                        <p class="mb-0 lh-lg">{{ material.content|linebreaks }}</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <!-- 教材資訊 -->
+                            <div class="mb-4">
+                                <h5 class="text-secondary mb-3">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    教材資訊
+                                </h5>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-folder-fill text-primary me-2"></i>
+                                            <div>
+                                                <small class="text-muted d-block">所屬單元</small>
+                                                <span class="fw-medium">{{ material.unit.title }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-person-fill text-success me-2"></i>
+                                            <div>
+                                                <small class="text-muted d-block">上傳者</small>
+                                                <span class="fw-medium">{{ material.creator.username }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-calendar-check text-info me-2"></i>
+                                            <div>
+                                                <small class="text-muted d-block">建立時間</small>
+                                                <span class="fw-medium">{{ material.created_at|date:"Y年m月d日 H:i" }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-clock-history text-warning me-2"></i>
+                                            <div>
+                                                <small class="text-muted d-block">更新時間</small>
+                                                <span class="fw-medium">{{ material.updated_at|date:"Y年m月d日 H:i" }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 下載區域 -->
+                            {% if material.pdf_file %}
+                                <div class="mb-4">
+                                    <h5 class="text-secondary mb-3">
+                                        <i class="bi bi-download me-2"></i>
+                                        下載教材
+                                    </h5>
+                                    <div class="bg-light p-3 rounded">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-file-earmark-pdf-fill text-danger me-3 fs-4"></i>
+                                                <div>
+                                                    <div class="fw-medium">{{ material.title }}.pdf</div>
+                                                    <small class="text-muted">PDF 檔案</small>
+                                                </div>
+                                            </div>
+                                            <a href="{% url 'MaterialDownload' material.id %}" 
+                                               class="btn btn-primary">
+                                                <i class="bi bi-download me-1"></i>
+                                                下載
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 側邊欄 -->
+                <div class="col-lg-4">
+                    <!-- 相關教材 -->
+                    {% if related_materials %}
+                        <div class="card shadow-sm border-0 mb-4">
+                            <div class="card-header bg-light">
+                                <h5 class="card-title mb-0">
+                                    <i class="bi bi-collection me-2"></i>
+                                    同單元其他教材
+                                </h5>
+                            </div>
+                            <div class="card-body p-0">
+                                {% for related in related_materials %}
+                                    <div class="border-bottom p-3 hover-bg-light">
+                                        <div class="d-flex align-items-start">
+                                            <i class="bi bi-file-earmark-pdf-fill text-danger me-2 mt-1"></i>
+                                            <div class="flex-grow-1">
+                                                <a href="{% url 'MaterialDetail' related.id %}" 
+                                                   class="text-decoration-none text-dark">
+                                                    <div class="fw-medium mb-1">{{ related.title }}</div>
+                                                </a>
+                                                {% if related.content %}
+                                                    <small class="text-muted">
+                                                        {{ related.content|truncatewords:10 }}
+                                                    </small>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <!-- 快速操作 -->
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-light">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-lightning-charge me-2"></i>
+                                快速操作
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                {% if material.pdf_file %}
+                                    <a href="{% url 'MaterialDownload' material.id %}" 
+                                       class="btn btn-primary">
+                                        <i class="bi bi-download me-1"></i>
+                                        下載教材
+                                    </a>
+                                {% endif %}
+                                <a href="{% url 'UnitDetail' material.unit.id %}" 
+                                   class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left me-1"></i>
+                                    返回單元
+                                </a>
+                                <a href="{% url 'MaterialList' %}" 
+                                   class="btn btn-outline-secondary">
+                                    <i class="bi bi-house me-1"></i>
+                                    返回教材區
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 自定義樣式 -->
+<style>
+.hover-bg-light:hover {
+    background-color: #f8f9fa !important;
+}
+</style>
+{% endblock %}

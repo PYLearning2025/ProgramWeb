@@ -23,6 +23,7 @@ import questions.views as questions_views
 import answers.views as answers_views
 import reviews.views as reviews_views
 import ai.views as ai_views
+import material.views as material_views
 import reports.views as reports_views
 from django.conf import settings
 from django.conf.urls.static import static
@@ -64,6 +65,29 @@ urlpatterns = [
     # -------- AI URLs --------
     path("ai/questionanalysis/", ai_views.analyze_question, name="QuestionAnalysis"),
 
+    # -------- Material URLs --------
+    path("material/", material_views.material_list, name="MaterialList"),
+    path("material/unit/<int:unit_id>/", material_views.unit_detail, name="UnitDetail"),
+    path("material/material/<int:material_id>/", material_views.material_detail, name="MaterialDetail"),
+    path("material/download/<int:material_id>/", material_views.material_download, name="MaterialDownload"),
+    path("material/search/", material_views.search_materials, name="SearchMaterials"),
+    path("material/manage/", material_views.manage_materials, name="ManageMaterials"),
+    
+    # Material 管理功能 URLs
+    path("material/add-unit/", material_views.add_unit, name="AddUnit"),
+    path("material/add-material/", material_views.add_material, name="AddMaterial"),
+    path("material/add-category/", material_views.add_category, name="AddCategory"),
+    
+    # Material 刪除功能 URLs
+    path("material/delete-material/<int:material_id>/", material_views.delete_material, name="DeleteMaterial"),
+    path("material/delete-unit/<int:unit_id>/", material_views.delete_unit, name="DeleteUnit"),
+    path("material/delete-category/<int:category_id>/", material_views.delete_category, name="DeleteCategory"),
+    
+    # Material 編輯功能 URLs
+    path("material/edit-unit/<int:unit_id>/", material_views.edit_unit, name="EditUnit"),
+    path("material/edit-material/<int:material_id>/", material_views.edit_material, name="EditMaterial"),
+    path("material/edit-category/<int:category_id>/", material_views.edit_category, name="EditCategory"),
+    
     # -------- Reports URLs --------
     path("reports/create/", reports_views.create_report, name="CreateReport"),
 

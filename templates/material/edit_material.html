@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }} - 程式設計平台{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-3">
+    <!-- 頁面標題 -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">
+            <i class="bi bi-pencil-square text-warning me-2"></i>
+            編輯教材
+        </h1>
+        <a href="{% url 'ManageMaterials' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>
+            返回管理頁面
+        </a>
+    </div>
+
+    <!-- 編輯表單 -->
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-file-earmark-text text-success me-2"></i>
+                        編輯教材：{{ material.title }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" id="editMaterialForm">
+                        {% csrf_token %}
+                        
+                        <!-- 教材標題 -->
+                        <div class="mb-3">
+                            <label for="title" class="form-label">
+                                <i class="bi bi-file-text me-1"></i>
+                                教材標題 <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="title" 
+                                   name="title" 
+                                   value="{{ material.title }}"
+                                   required>
+                        </div>
+
+                        <!-- 教材描述 -->
+                        <div class="mb-3">
+                            <label for="content" class="form-label">
+                                <i class="bi bi-chat-text me-1"></i>
+                                教材描述
+                            </label>
+                            <textarea class="form-control" 
+                                      id="content" 
+                                      name="content" 
+                                      rows="3" 
+                                      placeholder="請輸入教材描述...">{{ material.content }}</textarea>
+                        </div>
+
+                        <div class="row">
+                            <!-- 選擇單元 -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="unit" class="form-label">
+                                        <i class="bi bi-folder me-1"></i>
+                                        所屬單元 <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-select" id="unit" name="unit" required>
+                                        <option value="">請選擇單元</option>
+                                        {% for unit in units %}
+                                            <option value="{{ unit.id }}" {% if unit.id == material.unit.id %}selected{% endif %}>
+                                                {{ unit.title }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- 選擇類型 -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="category" class="form-label">
+                                        <i class="bi bi-tags me-1"></i>
+                                        教材類型
+                                    </label>
+                                    <select class="form-select" id="category" name="category">
+                                        <option value="">請選擇類型（可選）</option>
+                                        {% for category in categories %}
+                                            <option value="{{ category.id }}" {% if material.category and category.id == material.category.id %}selected{% endif %}>
+                                                {{ category.name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 排序順序 -->
+                        <div class="mb-3">
+                            <label for="order" class="form-label">
+                                <i class="bi bi-sort-numeric-up me-1"></i>
+                                排序順序
+                            </label>
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="order" 
+                                   name="order" 
+                                   value="{{ material.order }}"
+                                   min="1" 
+                                   placeholder="請輸入排序順序（數字越小越前面）">
+                            <div class="form-text">留空將自動排在最後</div>
+                        </div>
+
+                        <!-- PDF檔案 -->
+                        <div class="mb-3">
+                            <label for="pdf_file" class="form-label">
+                                <i class="bi bi-file-earmark-pdf me-1"></i>
+                                PDF檔案
+                            </label>
+                            {% if material.pdf_file %}
+                                <div class="alert alert-info d-flex align-items-center mb-2">
+                                    <i class="bi bi-info-circle-fill me-2"></i>
+                                    <div>
+                                        目前檔案：
+                                        <a href="{{ material.pdf_file.url }}" target="_blank" class="text-decoration-none">
+                                            {{ material.pdf_file.name }}
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <input type="file" 
+                                   class="form-control" 
+                                   id="pdf_file" 
+                                   name="pdf_file" 
+                                   accept=".pdf">
+                            <div class="form-text">
+                                {% if material.pdf_file %}
+                                    上傳新檔案將會替換現有檔案
+                                {% else %}
+                                    請選擇PDF檔案上傳
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- 按鈕群組 -->
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{% url 'ManageMaterials' %}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle me-1"></i>
+                                取消
+                            </a>
+                            <button type="submit" class="btn btn-warning">
+                                <i class="bi bi-check-circle me-1"></i>
+                                更新教材
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('editMaterialForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    fetch(this.action || window.location.href, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            if (data.redirect) {
+                window.location.href = "{% url 'ManageMaterials' %}";
+            }
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('發生錯誤，請稍後再試。');
+    });
+});
+</script>
+{% endblock %}
