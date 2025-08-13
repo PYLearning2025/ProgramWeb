@@ -1,12 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator
 from django.db.models import Q
 from .models import Unit, Material, MaterialCategory
 import hashlib
 import os
+from features.decorators import admin_only
 
 #教材區
 def material_list(request):
@@ -112,7 +112,7 @@ def check_duplicate_pdf(uploaded_file):
     return None
 
 # 管理功能 - 需要管理員權限
-@staff_member_required
+@admin_only
 def manage_materials(request):
     units = Unit.objects.all().order_by('order')
     # 只顯示最近的20個教材，提升頁面載入速度
@@ -124,7 +124,7 @@ def manage_materials(request):
     return render(request, 'material/manage_materials.html', locals())
 
 # 新增單元
-@staff_member_required
+@admin_only
 def add_unit(request):
     if request.method == 'POST':
         title = request.POST.get('title')
@@ -168,7 +168,7 @@ def add_unit(request):
     return render(request, 'material/add_unit.html', locals())
 
 # 新增教材
-@staff_member_required
+@admin_only
 def add_material(request):
     if request.method == 'POST':
         title = request.POST.get('title')
@@ -249,7 +249,7 @@ def add_material(request):
     return render(request, 'material/add_material.html', locals())
 
 # 新增教材類型
-@staff_member_required
+@admin_only
 def add_category(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -284,7 +284,7 @@ def add_category(request):
     return render(request, 'material/add_category.html', locals())
 
 # 刪除教材
-@staff_member_required
+@admin_only
 def delete_material(request, material_id):
     material = get_object_or_404(Material, id=material_id)
     
@@ -301,7 +301,7 @@ def delete_material(request, material_id):
     return render(request, 'material/delete_confirm.html', locals())
 
 # 刪除單元
-@staff_member_required  
+@admin_only
 def delete_unit(request, unit_id):
     unit = get_object_or_404(Unit, id=unit_id)
     
@@ -324,7 +324,7 @@ def delete_unit(request, unit_id):
     return render(request, 'material/delete_confirm.html', locals())
 
 # 刪除教材類型
-@staff_member_required
+@admin_only
 def delete_category(request, category_id):
     category = get_object_or_404(MaterialCategory, id=category_id)
     
@@ -341,7 +341,7 @@ def delete_category(request, category_id):
     return render(request, 'material/delete_confirm.html', locals())
 
 # 編輯單元
-@staff_member_required
+@admin_only
 def edit_unit(request, unit_id):
     unit = get_object_or_404(Unit, id=unit_id)
     
@@ -378,7 +378,7 @@ def edit_unit(request, unit_id):
     return render(request, 'material/edit_unit.html', locals())
 
 # 編輯教材
-@staff_member_required
+@admin_only
 def edit_material(request, material_id):
     material = get_object_or_404(Material, id=material_id)
     
@@ -428,7 +428,7 @@ def edit_material(request, material_id):
     return render(request, 'material/edit_material.html', locals())
 
 # 編輯教材類型
-@staff_member_required
+@admin_only
 def edit_category(request, category_id):
     category = get_object_or_404(MaterialCategory, id=category_id)
     
@@ -461,5 +461,3 @@ def edit_category(request, category_id):
     categories = MaterialCategory.objects.all()
     page_title = f'編輯類型 - {category.name}'
     return render(request, 'material/edit_category.html', locals())
-
-
