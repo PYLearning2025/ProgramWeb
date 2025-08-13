@@ -51,10 +51,10 @@ INSTALLED_APPS = [
     "answers",  # Answers app
     "reviews",  # Reviews app
     "reports",  # Reports app
-    "stages",  # Stages app
     "news",  # News app
     "ai",  # AI app
     "material",  # Material app
+    "features",  # Feature toggle app
 ]
 
 MIDDLEWARE = [

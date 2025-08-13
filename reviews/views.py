@@ -6,9 +6,11 @@ from answers.models import Answer
 from accounts.models import User
 from django.contrib.auth.decorators import login_required
 from .forms import PeerReviewForm
+from features.decorators import feature_required
 
 @login_required
-def create_review(request, question_id):
+@feature_required('review_create')
+def review_create(request, question_id):
     question = get_object_or_404(Question, id=question_id)
     answer = get_object_or_404(Answer, question=question)
     user = request.user

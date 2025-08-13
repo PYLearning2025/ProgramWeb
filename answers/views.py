@@ -8,8 +8,11 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from features.decorators import feature_required
 
-def create_answer(request, question_id):
+@login_required
+@feature_required('answer_create')
+def answer_create(request, question_id):
     question = Question.objects.get(id=question_id)
     existing_answer = Answer.objects.filter(user=request.user, question_id=question_id).first()
     if existing_answer:
@@ -32,7 +35,9 @@ def create_answer(request, question_id):
             form = AnswerForm()
         return render(request, 'answers/answer.html', locals())
 
-def submit_answer(request):
+@login_required
+@feature_required('answer_submit')
+def answer_submit(request):
     if request.method != 'POST':
         return JsonResponse({'message': '只允許 POST 請求'}, status=405)
     if not request.user.is_authenticated:
@@ -54,6 +59,6 @@ def submit_answer(request):
     answer.save()
     return JsonResponse({'message': '答案已成功提交！', 'redirect_url': reverse('QuestionDetail', args=[question_id])})
 
-def debug_answer(request):
+def answer_debug(request):
     """實作debug功能"""
     pass

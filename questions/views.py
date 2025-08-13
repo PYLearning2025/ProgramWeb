@@ -6,9 +6,11 @@ from .models import Question, QuestionHistory, QuestionLog
 from answers.models import Answer
 from reviews.models import PeerReview
 from .forms import QuestionForm, QuestionDetailForm
+from features.decorators import feature_required
 
 @login_required
-def create_question(request):
+@feature_required('question_create')
+def question_create(request):
     if request.method == 'POST':
         form = QuestionForm(request.POST, user=request.user)
         if form.is_valid():
@@ -85,6 +87,7 @@ def question_version(request, question_id, version):
     return render(request, 'questions/detail.html', locals())
 
 @login_required
+@feature_required('question_update')
 def question_update(request, question_id):
     try:
         question = Question.objects.get(id=question_id)

@@ -2,9 +2,11 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from .forms import ReportForm
+from features.decorators import feature_required
 
 @login_required
-def create_report(request):
+@feature_required('report_create')
+def report_create(request):
     if request.method == 'POST':
         form = ReportForm(request.POST, request.FILES)
         if form.is_valid():
