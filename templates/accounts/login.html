@@ -1,44 +1,31 @@
-{% extends "base.html" %}
-{% load static %}
-
-{% block title %}登入{% endblock %}
-
+{% extends "base.html" %} {% load static %} {% block title %}登入{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/accounts/login.css' %}">
-{% endblock %}
-
-{% block extra_js %}
+<link rel="stylesheet" href="{% static 'css/accounts/login.css' %}" />
+{% endblock %} {% block extra_js %}
 <script src="{% static 'js/accounts/login.js' %}"></script>
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <div class="login-container">
-    <div class="login-card">
-        <h1 class="login-title">登入</h1>
-        <form method="post" id="login-form">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="{{ form.username.id_for_label }}" class="form-label">帳號</label>
-                {{ form.username }}
-            </div>
-            <div class="form-group">
-                <label for="{{ form.password.id_for_label }}" class="form-label">密碼</label>
-                {{ form.password }}
-            </div>
-            <div class="form-checkbox">
-                {{ form.remember_me }}
-                <label for="{{ form.remember_me.id_for_label }}">{{ form.remember_me.label }}</label>
-            </div>
-            {% if form.errors %}
-                <script>
-                    alert("{% if form.non_field_errors %}{{ form.non_field_errors.0|escapejs }}{% else %}{{ form.errors.as_text|escapejs }}{% endif %}");
-                </script>
-            {% endif %}
-            <button type="submit" class="login-submit-btn">登入</button>
-            <div class="register-link">
-                還不是會員嗎? <a href="{% url 'Register' %}">註冊</a>
-            </div>
-        </form>
-    </div>
+  <div class="login-card">
+    <h1 class="login-title">登入</h1>
+    <form method="post" id="login-form">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="{{ form.username.id_for_label }}" class="form-label">帳號</label>
+        {{ form.username }}
+      </div>
+      <div class="form-group">
+        <label for="{{ form.password.id_for_label }}" class="form-label">密碼</label>
+        {{ form.password }}
+      </div>
+      <div class="form-checkbox">
+        {{ form.remember_me }}
+        <label for="{{ form.remember_me.id_for_label }}">{{ form.remember_me.label }}</label>
+      </div>
+      <button type="submit" class="login-submit-btn">登入</button>
+      <div class="register-link">
+        還不是會員嗎? <a href="{% url 'Register' %}">註冊</a>
+      </div>
+    </form>
+  </div>
 </div>
 {% endblock %}

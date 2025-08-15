@@ -1,3 +1,26 @@
+// 顯示 toast
+function showToast(message, type = 'info') {
+  const toastElement = document.getElementById('liveToast');
+  const messageElement = document.getElementById('toastMessage');
+
+  // 設置消息內容
+  messageElement.textContent = message;
+
+  // 設置背景顏色
+  toastElement.className = 'toast align-items-center text-white border-0';
+  if (type === 'error') {
+    toastElement.classList.add('bg-danger');
+  } else if (type === 'success') {
+    toastElement.classList.add('bg-success');
+  } else {
+    toastElement.classList.add('bg-info');
+  }
+
+  // 使用Bootstrap標準API
+  const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastElement, { delay: 3000 });
+  toastBootstrap.show();
+}
+
 $(document).ready(function () {
   // 分頁設定
   const itemsPerPage = 6; // 每頁顯示6個題目
@@ -8,19 +31,19 @@ $(document).ready(function () {
   initializeFilters();
   initializePagination();
 
-  // 難度篩選
-  $('.level-filter').on('click', function () {
-    const level = $(this).data('level');
+  // 評分狀態篩選
+  $('.status-filter').on('click', function () {
+    const status = $(this).data('status');
 
     // 更新按鈕狀態
-    $('.level-filter').removeClass('active');
+    $('.status-filter').removeClass('active');
     $(this).addClass('active');
 
     // 重置到第一頁
     currentPage = 1;
 
     // 執行篩選
-    filterQuestions(level, getCurrentSearchTerm());
+    filterQuestions(status, getCurrentSearchTerm());
   });
 
   // 搜尋功能
@@ -45,11 +68,11 @@ $(document).ready(function () {
 
   function performSearch() {
     const searchTerm = $('#search-input').val().trim();
-    const level = getCurrentLevel();
+    const status = getCurrentStatus();
 
     // 重置到第一頁
     currentPage = 1;
-    filterQuestions(level, searchTerm);
+    filterQuestions(status, searchTerm);
   }
 
   // 重置篩選
@@ -102,6 +125,9 @@ $(document).ready(function () {
     // 使用 Bootstrap 的列選擇器，排除空狀態和無結果狀態
     const $questionColumns = $('#questions-container > .col-12.col-md-6.col-xl-4');
     filteredItems = $questionColumns.toArray();
+
+
+
     updateFilterStats();
     updatePagination();
   }
@@ -110,7 +136,7 @@ $(document).ready(function () {
     updatePagination();
   }
 
-  function filterQuestions(level, searchTerm) {
+  function filterQuestions(status, searchTerm) {
     const $questionColumns = $('#questions-container > .col-12.col-md-6.col-xl-4');
     const $noResults = $('#no-results');
     const $questionsContainer = $('#questions-container');
@@ -124,19 +150,20 @@ $(document).ready(function () {
 
       $questionColumns.each(function () {
         const $column = $(this);
-        const itemLevel = $column.data('level');
+        const itemStatus = $column.data('status');
+        const itemReviewed = $column.data('reviewed') === 'true'; // 正確處理布林值
         const itemTitle = $column.data('title') || '';
-        const itemDescription = $column.data('description') || '';
+        const itemContent = $column.data('content') || '';
 
-        // 檢查難度篩選
-        const levelMatch = level === 'all' || itemLevel === level;
+        // 檢查狀態篩選
+        const statusMatch = status === 'all' || itemStatus === status;
 
         // 檢查搜尋條件
         const searchMatch = !searchTerm ||
           itemTitle.includes(searchTerm.toLowerCase()) ||
-          itemDescription.includes(searchTerm.toLowerCase());
+          itemContent.includes(searchTerm.toLowerCase());
 
-        if (levelMatch && searchMatch) {
+        if (statusMatch && searchMatch) {
           filteredItems.push(this);
 
           // 高亮搜尋結果
@@ -165,13 +192,13 @@ $(document).ready(function () {
       }
 
       // 更新統計信息
-      updateFilterStats(filteredItems.length, level, searchTerm);
+      updateFilterStats(filteredItems.length, status, searchTerm);
 
       // 移除加載效果
       $questionsContainer.removeClass('loading');
 
       // 滾動到結果區域
-      if (searchTerm || level !== 'all') {
+      if (searchTerm || status !== 'all') {
         $('html, body').animate({
           scrollTop: $('#questions-container').offset().top - 100
         }, 500);
@@ -199,7 +226,7 @@ $(document).ready(function () {
     updatePaginationControls(totalPages);
 
     // 更新統計信息
-    updateFilterStats(filteredItems.length, getCurrentLevel(), getCurrentSearchTerm());
+    updateFilterStats(filteredItems.length, getCurrentStatus(), getCurrentSearchTerm());
 
     // 滾動到頂部
     if (totalPages > 1) {
@@ -281,7 +308,7 @@ $(document).ready(function () {
     if (!searchTerm) return;
 
     const $title = $item.find('.question-title a');
-    const $description = $item.find('.question-description');
+    const $content = $item.find('.question-content');
 
     const regex = new RegExp(`(${escapeRegExp(searchTerm)})`, 'gi');
 
@@ -290,21 +317,21 @@ $(document).ready(function () {
     const highlightedTitle = originalTitle.replace(regex, '<span class="highlight">$1</span>');
     $title.html(highlightedTitle);
 
-    // 高亮描述
-    const originalDescription = $description.text();
-    const highlightedDescription = originalDescription.replace(regex, '<span class="highlight">$1</span>');
-    $description.html(highlightedDescription);
+    // 高亮內容
+    const originalContent = $content.text();
+    const highlightedContent = originalContent.replace(regex, '<span class="highlight">$1</span>');
+    $content.html(highlightedContent);
   }
 
   function removeHighlight($item) {
     const $title = $item.find('.question-title a');
-    const $description = $item.find('.question-description');
+    const $content = $item.find('.question-content');
 
     $title.html($title.text());
-    $description.html($description.text());
+    $content.html($content.text());
   }
 
-  function updateFilterStats(visibleCount, level, searchTerm) {
+  function updateFilterStats(visibleCount, status, searchTerm) {
     const totalCount = $('#questions-container > .col-12.col-md-6.col-xl-4').length;
     let statsText = '';
 
@@ -312,12 +339,12 @@ $(document).ready(function () {
       visibleCount = totalCount;
     }
 
-    if (level === 'all' && !searchTerm) {
+    if (status === 'all' && !searchTerm) {
       statsText = `顯示全部 ${totalCount} 道題目`;
     } else {
-      const levelText = getLevelText(level);
+      const statusText = getStatusText(status);
       const searchText = searchTerm ? `包含 "${searchTerm}" 的` : '';
-      statsText = `顯示 ${searchText}${levelText}題目：${visibleCount} / ${totalCount} 道`;
+      statsText = `顯示 ${searchText}${statusText}題目：${visibleCount} / ${totalCount} 道`;
     }
 
     // 添加分頁信息
@@ -329,17 +356,16 @@ $(document).ready(function () {
     $('#filter-stats').text(statsText);
   }
 
-  function getLevelText(level) {
-    switch (level) {
-      case 'easy': return '簡單';
-      case 'medium': return '中等';
-      case 'hard': return '困難';
+  function getStatusText(status) {
+    switch (status) {
+      case 'pending': return '待評分';
+      case 'reviewed': return '已評分';
       default: return '';
     }
   }
 
-  function getCurrentLevel() {
-    return $('.level-filter.active').data('level') || 'all';
+  function getCurrentStatus() {
+    return $('.status-filter.active').data('status') || 'all';
   }
 
   function getCurrentSearchTerm() {
@@ -347,9 +373,9 @@ $(document).ready(function () {
   }
 
   function resetFilters() {
-    // 重置難度篩選
-    $('.level-filter').removeClass('active');
-    $('.level-filter[data-level="all"]').addClass('active');
+    // 重置狀態篩選
+    $('.status-filter').removeClass('active');
+    $('.status-filter[data-status="all"]').addClass('active');
 
     // 清除搜尋
     $('#search-input').val('');

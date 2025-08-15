@@ -3,138 +3,139 @@
 
 {% block content %}
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-md-6 mx-auto">
-            <!-- 頁面標題 -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2>
-                    <i class="bi bi-tag-plus text-warning me-3"></i>
-                    新增類型
-                </h2>
-                <a href="{% url 'ManageMaterials' %}" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-1"></i>
-                    返回管理區
-                </a>
-            </div>
+  <div class="row">
+    <div class="col-md-6 mx-auto">
+      <!-- 頁面標題 -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+          <i class="bi bi-tag-plus text-warning me-3"></i>
+          新增類型
+        </h2>
+        <a href="{% url 'ManageMaterials' %}" class="btn btn-outline-secondary">
+          <i class="bi bi-arrow-left me-1"></i>
+          返回管理區
+        </a>
+      </div>
 
-            <!-- 新增類型表單 -->
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="bi bi-info-circle me-2"></i>
-                        類型資訊
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <form method="post" id="addCategoryForm">
-                        {% csrf_token %}
-                        
-                        <div class="mb-3">
-                            <label for="name" class="form-label">
-                                <i class="bi bi-tag text-warning me-1"></i>
-                                類型名稱 <span class="text-danger">*</span>
-                            </label>
-                            <input type="text" class="form-control" id="name" name="name" required>
-                            <div class="form-text">請輸入教材類型的名稱，例如：講義、練習題、參考資料</div>
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="description" class="form-label">
-                                <i class="bi bi-text-paragraph text-warning me-1"></i>
-                                類型描述
-                            </label>
-                            <textarea class="form-control" id="description" name="description" rows="3" placeholder="請輸入類型的詳細描述..."></textarea>
-                            <div class="form-text">可選：描述這個類型的用途和特點</div>
-                        </div>
-
-                        <div class="d-flex gap-3">
-                            <button type="submit" class="btn btn-warning">
-                                <i class="bi bi-check-circle me-1"></i>
-                                新增類型
-                            </button>
-                            <a href="{% url 'ManageMaterials' %}" class="btn btn-secondary">
-                                <i class="bi bi-x-circle me-1"></i>
-                                取消
-                            </a>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- 現有類型列表 -->
-            {% if categories %}
-            <div class="card mt-4">
-                <div class="card-header">
-                    <h6 class="mb-0">
-                        <i class="bi bi-list me-2"></i>
-                        現有類型
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        {% for category in categories %}
-                        <div class="col-md-6 mb-2">
-                            <div class="d-flex align-items-center">
-                                <i class="bi bi-tag-fill text-warning me-2"></i>
-                                <span class="fw-medium">{{ category.name }}</span>
-                            </div>
-                            {% if category.description %}
-                            <small class="text-muted ms-3">{{ category.description }}</small>
-                            {% endif %}
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-            {% endif %}
-
-            <!-- 說明區域 -->
-            <div class="card mt-4">
-                <div class="card-body">
-                    <h6 class="card-title">
-                        <i class="bi bi-lightbulb text-warning me-2"></i>
-                        使用說明
-                    </h6>
-                    <ul class="mb-0">
-                        <li>類型名稱為必填項目，且不能重複</li>
-                        <li>類型描述可幫助了解該類型的用途</li>
-                        <li>教材類型可用於分類和篩選教材</li>
-                        <li>常見類型：講義、練習題、考古題、參考資料等</li>
-                    </ul>
-                </div>
-            </div>
+      <!-- 新增類型表單 -->
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">
+            <i class="bi bi-info-circle me-2"></i>
+            類型資訊
+          </h5>
         </div>
+        <div class="card-body">
+          <form method="post" id="addCategoryForm">
+            {% csrf_token %}
+
+            <div class="mb-3">
+              <label for="name" class="form-label">
+                <i class="bi bi-tag text-warning me-1"></i>
+                類型名稱 <span class="text-danger">*</span>
+              </label>
+              <input type="text" class="form-control" id="name" name="name" required>
+              <div class="form-text">請輸入教材類型的名稱，例如：講義、練習題、參考資料</div>
+            </div>
+
+            <div class="mb-4">
+              <label for="description" class="form-label">
+                <i class="bi bi-text-paragraph text-warning me-1"></i>
+                類型描述
+              </label>
+              <textarea class="form-control" id="description" name="description" rows="3"
+                placeholder="請輸入類型的詳細描述..."></textarea>
+              <div class="form-text">可選：描述這個類型的用途和特點</div>
+            </div>
+
+            <div class="d-flex gap-3">
+              <button type="submit" class="btn btn-warning">
+                <i class="bi bi-check-circle me-1"></i>
+                新增類型
+              </button>
+              <a href="{% url 'ManageMaterials' %}" class="btn btn-secondary">
+                <i class="bi bi-x-circle me-1"></i>
+                取消
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- 現有類型列表 -->
+      {% if categories %}
+      <div class="card mt-4">
+        <div class="card-header">
+          <h6 class="mb-0">
+            <i class="bi bi-list me-2"></i>
+            現有類型
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            {% for category in categories %}
+            <div class="col-md-6 mb-2">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-tag-fill text-warning me-2"></i>
+                <span class="fw-medium">{{ category.name }}</span>
+              </div>
+              {% if category.description %}
+              <small class="text-muted ms-3">{{ category.description }}</small>
+              {% endif %}
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- 說明區域 -->
+      <div class="card mt-4">
+        <div class="card-body">
+          <h6 class="card-title">
+            <i class="bi bi-lightbulb text-warning me-2"></i>
+            使用說明
+          </h6>
+          <ul class="mb-0">
+            <li>類型名稱為必填項目，且不能重複</li>
+            <li>類型描述可幫助了解該類型的用途</li>
+            <li>教材類型可用於分類和篩選教材</li>
+            <li>常見類型：講義、練習題、考古題、參考資料等</li>
+          </ul>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <script>
-document.getElementById('addCategoryForm').addEventListener('submit', function(e) {
+  document.getElementById('addCategoryForm').addEventListener('submit', function (e) {
     e.preventDefault();
-    
+
     const formData = new FormData(this);
-    
+
     fetch(this.action || window.location.href, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-        }
+      method: 'POST',
+      body: formData,
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest'
+      }
     })
-    .then(response => response.json())
-    .then(data => {
+      .then(response => response.json())
+      .then(data => {
         if (data.success) {
-            alert(data.message);
-            if (data.redirect) {
-                window.location.href = "{% url 'ManageMaterials' %}";
-            }
+          alert(data.message);
+          if (data.redirect) {
+            window.location.href = "{% url 'ManageMaterials' %}";
+          }
         } else {
-            alert(data.message);
+          alert(data.message);
         }
-    })
-    .catch(error => {
+      })
+      .catch(error => {
         console.error('Error:', error);
         alert('發生錯誤，請稍後再試。');
-    });
-});
+      });
+  });
 </script>
 {% endblock %}

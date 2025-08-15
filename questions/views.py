@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
+from django.http import JsonResponse
 from .models import Question, QuestionHistory, QuestionLog
 from answers.models import Answer
 from reviews.models import PeerReview
@@ -40,22 +40,19 @@ def question_create(request):
             # 設置多對多關係
             history.tags.set(question.tags.all())
             history.topics.set(question.topics.all())
-            messages.success(request, '問題創建成功！')
-            return redirect(reverse('UserinfoQuestions'))
+            return JsonResponse({'success': True, 'message': '問題創建成功！', 'redirect_url': reverse('UserinfoQuestions')})
         else:
-            messages.error(request, '表單驗證失敗，請檢查您的輸入！')
-            form = QuestionForm(user=request.user)
+            return JsonResponse({'success': False, 'message': '表單驗證失敗，請檢查您的輸入！'})
     else:
         form = QuestionForm(user=request.user)
     
-    return render(request, 'questions/create.html', locals())
+    return render(request, 'questions/create.html', {'form': form, 'page_mode': 'create'})
 
 def question_detail(request, question_id):
     try:
         question = Question.objects.get(id=question_id)
     except Question.DoesNotExist:
-        messages.error(request, '問題不存在或已被刪除。')
-        return redirect(reverse('Index'))
+        return render(request, 'errors/404.html', status=404)
 
     # 使用表單顯示問題詳細信息
     form = QuestionDetailForm(instance=question)
@@ -78,8 +75,7 @@ def question_version(request, question_id, version):
         history = QuestionHistory.objects.filter(question=question).order_by('-version')
         history_question = QuestionHistory.objects.get(question=question, version=version)
     except (Question.DoesNotExist, QuestionHistory.DoesNotExist):
-        messages.error(request, '問題或版本不存在。')
-        return redirect(reverse('UserinfoQuestions'))
+        return render(request, 'errors/404.html', status=404)
 
     # 使用表單顯示問題歷史版本的詳細信息
     form = QuestionDetailForm(instance=history_question)
@@ -92,8 +88,7 @@ def question_update(request, question_id):
     try:
         question = Question.objects.get(id=question_id)
     except Question.DoesNotExist:
-        messages.error(request, '問題不存在或已被刪除。')
-        return redirect(reverse('UserinfoQuestions'))
+        return render(request, 'errors/404.html', status=404)
 
     if request.method == 'POST':
         form = QuestionForm(request.POST, instance=question, user=request.user)
@@ -126,17 +121,16 @@ def question_update(request, question_id):
             # 設置多對多關係
             history.tags.set(updated_question.tags.all())
             history.topics.set(updated_question.topics.all())
-            return redirect(reverse('QuestionDetail', args=[question.id]))
+            return JsonResponse({'success': True, 'message': '問題更新成功！', 'redirect_url': reverse('QuestionDetail', args=[question.id])})
         else:
-            form = QuestionForm(instance=question, user=request.user)
-            form.add_error(None, '表單驗證失敗，請檢查您的輸入！')
+            return JsonResponse({'success': False, 'message': '表單驗證失敗，請檢查您的輸入！'})
     else:
         form = QuestionForm(instance=question, user=request.user)
 
-    return render(request, 'questions/create.html', locals())
+    return render(request, 'questions/create.html', {'form': form, 'question': question, 'page_mode': 'update'})
 
 def question_list(request):
-    if request.user.is_authenticated:
+    if request.user.is_staff:
         questions = Question.objects.filter(is_active=True).order_by('-created_at')
     else:
         questions = Question.objects.filter(is_active=True, is_approved=True).order_by('-created_at')

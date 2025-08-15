@@ -13,144 +13,135 @@
 
 {% block content %}
 <div class="container py-5">
-    <!-- 頁面標題 -->
-    <div class="row justify-content-center mb-4">
-        <div class="col-lg-8">
-            <div class="bg-primary bg-gradient text-white rounded-3 p-4 text-center">
-                <h2 class="fw-bold mb-2">問題回報</h2>
-                <p class="mb-0 opacity-75">有任何問題或建議，請填寫以下表單</p>
-            </div>
-        </div>
+  <!-- 頁面標題 -->
+  <div class="row justify-content-center mb-4">
+    <div class="col-lg-8">
+      <div class="bg-primary bg-gradient text-white rounded-3 p-4 text-center">
+        <h2 class="fw-bold mb-2">問題回報</h2>
+        <p class="mb-0 opacity-75">有任何問題或建議，請填寫以下表單</p>
+      </div>
     </div>
+  </div>
 
-    <!-- 表單區域 -->
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card shadow border-0 rounded-3">
-                <div class="card-body p-4">
-                    <form method="post" id="reportForm" enctype="multipart/form-data" class="needs-validation" novalidate>
-                        {% csrf_token %}
-                        
-                        <!-- 分類選擇 -->
-                        <div class="mb-3">
-                            <label for="{{ form.category.id_for_label }}" class="form-label fw-semibold">
-                                <i class="bi bi-folder-fill text-primary me-2"></i>{{ form.category.label }}
-                                <span class="text-danger">*</span>
-                            </label>
-                            {{ form.category }}
-                            {% if form.category.errors %}
-                            <div class="invalid-feedback d-block">
-                                {% for error in form.category.errors %}
-                                    <i class="bi bi-exclamation-triangle-fill me-1"></i>{{ error }}
-                                {% endfor %}
-                            </div>
-                            {% endif %}
-                        </div>
-                        
-                        <!-- 內容描述 -->
-                        <div class="mb-3">
-                            <label for="{{ form.content.id_for_label }}" class="form-label fw-semibold">
-                                <i class="bi bi-chat-text-fill text-primary me-2"></i>{{ form.content.label }}
-                                <span class="text-danger">*</span>
-                            </label>
-                            {{ form.content }}
-                            {% if form.content.errors %}
-                            <div class="invalid-feedback d-block">
-                                {% for error in form.content.errors %}
-                                    <i class="bi bi-exclamation-triangle-fill me-1"></i>{{ error }}
-                                {% endfor %}
-                            </div>
-                            {% endif %}
-                        </div>
-                        
-                        <!-- 檔案上傳區域 -->
-                        <div class="mb-4">
-                            <label for="{{ form.attachment.id_for_label }}" class="form-label fw-semibold">
-                                <i class="bi bi-paperclip text-primary me-2"></i>相關附件
-                                <span class="text-muted fw-normal">(選填)</span>
-                            </label>
-                            <div class="border rounded-3 p-3 bg-light">
-                                {{ form.attachment }}
-                                <div class="form-text text-muted mt-2">
-                                    <i class="bi bi-info-circle me-1"></i>{{ form.attachment.help_text }}
-                                </div>
-                            </div>
-                            {% if form.attachment.errors %}
-                            <div class="invalid-feedback d-block">
-                                {% for error in form.attachment.errors %}
-                                    <i class="bi bi-exclamation-triangle-fill me-1"></i>{{ error }}
-                                {% endfor %}
-                            </div>
-                            {% endif %}
-                        </div>
+  <!-- 表單區域 -->
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow border-0 rounded-3">
+        <div class="card-body p-4">
+          <form method="post" id="reportForm" enctype="multipart/form-data" class="needs-validation" novalidate>
+            {% csrf_token %}
 
-                        <!-- 全域錯誤訊息 -->
-                        {% if form.non_field_errors %}
-                        <div class="alert alert-danger d-block">
-                            {% for error in form.non_field_errors %}
-                                <i class="bi bi-exclamation-triangle-fill me-1"></i>{{ error }}
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                        
-                        <!-- 提交按鈕 -->
-                        <div class="d-flex gap-2 justify-content-end">
-                            <button type="button" class="btn btn-outline-secondary" onclick="history.back()">
-                                <i class="bi bi-arrow-left me-1"></i>返回
-                            </button>
-                            <button type="submit" class="btn btn-primary px-4" id="submit-btn">
-                                <i class="bi bi-send me-1"></i>提交回報
-                            </button>
-                        </div>
-                    </form>
+            <!-- 分類選擇 -->
+            <div class="mb-3">
+              <label for="{{ form.category.id_for_label }}" class="form-label fw-semibold">
+                <i class="bi bi-folder-fill text-primary me-2"></i>{{ form.category.label }}
+                <span class="text-danger">*</span>
+              </label>
+              {{ form.category }}
+              {% if form.category.errors %}
+              <div class="invalid-feedback d-block">
+                {% for error in form.category.errors %}
+                <i class="bi bi-exclamation-triangle-fill me-1"></i>{{ error }}
+                {% endfor %}
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- 內容描述 -->
+            <div class="mb-3">
+              <label for="{{ form.content.id_for_label }}" class="form-label fw-semibold">
+                <i class="bi bi-chat-text-fill text-primary me-2"></i>{{ form.content.label }}
+                <span class="text-danger">*</span>
+              </label>
+              {{ form.content }}
+              {% if form.content.errors %}
+              <div class="invalid-feedback d-block">
+                {% for error in form.content.errors %}
+                <i class="bi bi-exclamation-triangle-fill me-1"></i>{{ error }}
+                {% endfor %}
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- 檔案上傳區域 -->
+            <div class="mb-4">
+              <label for="{{ form.attachment.id_for_label }}" class="form-label fw-semibold">
+                <i class="bi bi-paperclip text-primary me-2"></i>相關附件
+                <span class="text-muted fw-normal">(選填)</span>
+              </label>
+              <div class="border rounded-3 p-3 bg-light">
+                {{ form.attachment }}
+                <div class="form-text text-muted mt-2">
+                  <i class="bi bi-info-circle me-1"></i>{{ form.attachment.help_text }}
                 </div>
+              </div>
+              {% if form.attachment.errors %}
+              <div class="invalid-feedback d-block">
+                {% for error in form.attachment.errors %}
+                <i class="bi bi-exclamation-triangle-fill me-1"></i>{{ error }}
+                {% endfor %}
+              </div>
+              {% endif %}
             </div>
+
+            <!-- 提交按鈕 -->
+            <div class="d-flex gap-2 justify-content-end">
+              <button type="button" class="btn btn-outline-secondary" onclick="history.back()">
+                <i class="bi bi-arrow-left me-1"></i>返回
+              </button>
+              <button type="submit" class="btn btn-primary px-4" id="submit-btn">
+                <i class="bi bi-send me-1"></i>提交回報
+              </button>
+            </div>
+          </form>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- 確認提交 Modal -->
 <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header border-0">
-                <h5 class="modal-title text-primary" id="confirmModalLabel">
-                    <i class="bi bi-question-circle-fill me-2"></i>確認提交
-                </h5>
-            </div>
-            <div class="modal-body">
-                <p class="mb-0">確定要提交這份回報嗎？提交後將無法修改。</p>
-            </div>
-            <div class="modal-footer border-0">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle me-1"></i>取消
-                </button>
-                <button type="button" class="btn btn-primary" id="confirmSubmitBtn">
-                    <i class="bi bi-check-circle me-1"></i>確認提交
-                </button>
-            </div>
-        </div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5 class="modal-title text-primary" id="confirmModalLabel">
+          <i class="bi bi-question-circle-fill me-2"></i>確認提交
+        </h5>
+      </div>
+      <div class="modal-body">
+        <p class="mb-0">確定要提交這份回報嗎？提交後將無法修改。</p>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+          <i class="bi bi-x-circle me-1"></i>取消
+        </button>
+        <button type="button" class="btn btn-primary" id="confirmSubmitBtn">
+          <i class="bi bi-check-circle me-1"></i>確認提交
+        </button>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- 成功提交 Modal -->
 <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header border-0">
-                <h5 class="modal-title text-success" id="successModalLabel">
-                    <i class="bi bi-check-circle-fill me-2"></i>提交成功
-                </h5>
-            </div>
-            <div class="modal-body">
-                <p class="mb-0">您的回報已成功提交，我們會盡快處理並回覆您。</p>
-            </div>
-            <div class="modal-footer border-0">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
-                    <i class="bi bi-check-circle me-1"></i>確定
-                </button>
-            </div>
-        </div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5 class="modal-title text-success" id="successModalLabel">
+          <i class="bi bi-check-circle-fill me-2"></i>提交成功
+        </h5>
+      </div>
+      <div class="modal-body">
+        <p class="mb-0">您的回報已成功提交，我們會盡快處理並回覆您。</p>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+          <i class="bi bi-check-circle me-1"></i>確定
+        </button>
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}

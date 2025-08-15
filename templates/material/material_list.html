@@ -5,78 +5,76 @@
 
 {% block content %}
 <div class="container-fluid px-4 py-3">
-    <div class="row">
-        <div class="col-12">
-            <!-- 頁面標題 -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="mb-0">
-                    <i class="bi bi-book-fill text-primary me-2"></i>
-                    {{ page_title }}
-                </h1>
-                <!-- 搜尋框 -->
-                <form method="get" action="{% url 'SearchMaterials' %}" class="d-flex">
-                    <input type="text" name="q" class="form-control me-2" 
-                           placeholder="搜尋教材..." style="width: 300px;">
-                    <button type="submit" class="btn btn-outline-primary">
-                        <i class="bi bi-search"></i>
-                    </button>
-                </form>
-            </div>
+  <div class="row">
+    <div class="col-12">
+      <!-- 頁面標題 -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">
+          <i class="bi bi-book-fill text-primary me-2"></i>
+          {{ page_title }}
+        </h1>
+        <!-- 搜尋框 -->
+        <form method="get" action="{% url 'SearchMaterials' %}" class="d-flex">
+          <input type="text" name="q" class="form-control me-2" placeholder="搜尋教材..." style="width: 300px;">
+          <button type="submit" class="btn btn-outline-primary">
+            <i class="bi bi-search"></i>
+          </button>
+        </form>
+      </div>
 
-            <!-- 教材單元列表 -->
-            {% if units %}
-                <div class="row">
-                    {% for unit in units %}
-                    <div class="col-lg-4 col-md-6 mb-4">
-                        <div class="card h-100 shadow-sm border-0">
-                            <div class="card-body d-flex flex-column">
-                                <!-- 單元標題 -->
-                                <h5 class="card-title text-primary mb-3">
-                                    <i class="bi bi-folder-fill me-2"></i>
-                                    {{ unit.title }}
-                                </h5>
-                                
-                                <!-- 單元描述 -->
-                                <p class="card-text text-muted flex-grow-1">
-                                    {{ unit.description|truncatewords:15 }}
-                                </p>
-                                
-                                <!-- 單元資訊 -->
-                                <div class="d-flex justify-content-between align-items-center mt-auto">
-                                    <small class="text-muted">
-                                        <i class="bi bi-file-text me-1"></i>
-                                        {{ unit.get_materials_count }} 個教材
-                                    </small>
-                                    <small class="text-muted">
-                                        <i class="bi bi-clock me-1"></i>
-                                        {{ unit.created_at|date:"m/d" }}
-                                    </small>
-                                </div>
-                                
-                                <!-- 進入單元按鈕 -->
-                                <div class="mt-3">
-                                    <a href="{% url 'UnitDetail' unit.id %}" 
-                                       class="btn btn-primary btn-sm w-100">
-                                        <i class="bi bi-arrow-right me-1"></i>
-                                        進入單元
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <!-- 空狀態 -->
-                <div class="text-center py-5">
-                    <div class="mb-4">
-                        <i class="bi bi-inbox display-1 text-muted"></i>
-                    </div>
-                    <h3 class="text-muted">尚無教材單元</h3>
-                    <p class="text-muted">請聯繫管理員建立教材內容</p>
-                </div>
-            {% endif %}
+      <!-- 教材單元列表 -->
+      {% if units %}
+      <div class="row">
+        {% for unit in units %}
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="card h-100 shadow-sm border-0">
+            <div class="card-body d-flex flex-column">
+              <!-- 單元標題 -->
+              <h5 class="card-title text-primary mb-3">
+                <i class="bi bi-folder-fill me-2"></i>
+                {{ unit.title }}
+              </h5>
+
+              <!-- 單元描述 -->
+              <p class="card-text text-muted flex-grow-1">
+                {{ unit.description|truncatewords:15 }}
+              </p>
+
+              <!-- 單元資訊 -->
+              <div class="d-flex justify-content-between align-items-center mt-auto">
+                <small class="text-muted">
+                  <i class="bi bi-file-text me-1"></i>
+                  {{ unit.get_materials_count }} 個教材
+                </small>
+                <small class="text-muted">
+                  <i class="bi bi-clock me-1"></i>
+                  {{ unit.created_at|date:"m/d" }}
+                </small>
+              </div>
+
+              <!-- 進入單元按鈕 -->
+              <div class="mt-3">
+                <a href="{% url 'UnitDetail' unit.id %}" class="btn btn-primary btn-sm w-100">
+                  <i class="bi bi-arrow-right me-1"></i>
+                  進入單元
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <!-- 空狀態 -->
+      <div class="text-center py-5">
+        <div class="mb-4">
+          <i class="bi bi-inbox display-1 text-muted"></i>
+        </div>
+        <h3 class="text-muted">尚無教材單元</h3>
+        <p class="text-muted">請聯繫管理員建立教材內容</p>
+      </div>
+      {% endif %}
     </div>
+  </div>
 </div>
 {% endblock %}

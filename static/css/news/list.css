@@ -1,54 +1,54 @@
 .news-tag {
-    background-color: #4f46e5;
+  background-color: #4f46e5;
 }
 
 .tag-important {
-    background: #ef4444;
+  background: #ef4444;
 }
 
 .tag-remind {
-    background: #f59e42;
+  background: #f59e42;
 }
 
 .news-tag.General {
-    background-color: #4f46e5 !important;
-    color: #e0e7ff !important;
+  background-color: #4f46e5 !important;
+  color: #e0e7ff !important;
 }
 .news-tag.Student {
-    background-color: #ea580c !important;
-    color: #ffedd5 !important;
+  background-color: #ea580c !important;
+  color: #ffedd5 !important;
 }
 
 .border-l-4 {
-    border-left-style: solid !important;
-    border-left-width: 4px !important;
+  border-left-style: solid !important;
+  border-left-width: 4px !important;
 }
 
 .rounded-r-lg {
-    border-top-right-radius: 0.5rem;
-    border-bottom-right-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
 }
 
 /* General 類別 */
 .border-General {
-    border-left-color: #4f46e5 !important;
+  border-left-color: #4f46e5 !important;
 }
 .bg-General {
-    background-color: #e0e7ff !important;
+  background-color: #e0e7ff !important;
 }
 
 /* Student 類別 */
 .border-Student {
-    border-left-color: #ea580c !important;
+  border-left-color: #ea580c !important;
 }
 .bg-Student {
-    background-color: #ffedd5 !important;
+  background-color: #ffedd5 !important;
 }
 
 .mb-3.border-l-4 {
-    transition: transform 0.18s cubic-bezier(.4,2,.6,1), box-shadow 0.18s;
+  transition: transform 0.18s cubic-bezier(0.4, 2, 0.6, 1), box-shadow 0.18s;
 }
 .mb-3.border-l-4:hover {
-    transform: scale(1.005);
-    box-shadow: 0 6px 24px rgba(80,70,229,0.13);
+  transform: scale(1.005);
+  box-shadow: 0 6px 24px rgba(80, 70, 229, 0.13);
 }

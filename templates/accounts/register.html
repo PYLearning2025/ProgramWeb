@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load i18n %}
-{% block title %}{% trans "註冊" %} | ProgramWeb{% endblock %}
+{% block title %}{% trans "註冊" %}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/accounts/register.css' %}">
@@ -13,55 +13,55 @@
 
 {% block content %}
 <div class="register-container">
-    <div class="register-card">
-        <h1 class="register-title">註冊</h1>
-        <form id="register-form" method="post">
-            {% csrf_token %}
-            <div class="form-group mb-3">
-                <label for="category" class="form-label">身份類別</label>
-                <select class="form-select" id="category" name="category" required>
-                    <option value="">請選擇</option>
-                    <option value="1">國小</option>
-                    <option value="2">國中</option>
-                    <option value="3">高中/職</option>
-                    <option value="4">大學</option>
-                    <option value="5">研究所</option>
-                    <option value="6">社會人士</option>
-                </select>
-            </div>
-            <div class="form-group mb-3">
-                <label for="id_name" class="form-label">姓名</label>
-                <input type="text" class="form-control" id="id_name" name="name" required>
-            </div>
-            <div class="form-group mb-3">
-                <label for="id_username" class="form-label">帳號</label>
-                <input type="text" class="form-control" id="id_username" name="username" required>
-            </div>
-            <div class="form-group mb-3 social-field d-none">
-                <label for="id_company" class="form-label">公司</label>
-                <input type="text" class="form-control" id="id_company" name="company" required>
-            </div>
-            <div class="form-group mb-3 social-field d-none">
-                <label for="id_job" class="form-label">職稱</label>
-                <input type="text" class="form-control" id="id_job" name="job" required>
-            </div>
-            <div class="form-group mb-3">
-                <label for="id_email" class="form-label">電子郵件</label>
-                <input type="email" class="form-control" id="id_email" name="email" required>
-            </div>
-            <div class="form-group mb-3">
-                <label for="id_password1" class="form-label">密碼</label>
-                <input type="password" class="form-control" id="id_password1" name="password1" required>
-            </div>
-            <div class="form-group mb-3">
-                <label for="id_password2" class="form-label">確認密碼</label>
-                <input type="password" class="form-control" id="id_password2" name="password2" required>
-            </div>
-            <button type="submit" class="register-submit-btn">註冊</button>
-            <div class="register-link mt-3">
-                已經有帳號了嗎? <a href="{% url 'Login' %}">登入</a>
-            </div>
-        </form>
-    </div>
+  <div class="register-card">
+    <h1 class="register-title">註冊</h1>
+    <form id="register-form" method="post">
+      {% csrf_token %}
+      <div class="form-group mb-3">
+        <label for="category" class="form-label">身份類別</label>
+        <select class="form-select" id="category" name="category" required>
+          <option value="">請選擇</option>
+          <option value="1">國小</option>
+          <option value="2">國中</option>
+          <option value="3">高中/職</option>
+          <option value="4">大學</option>
+          <option value="5">研究所</option>
+          <option value="6">社會人士</option>
+        </select>
+      </div>
+      <div class="form-group mb-3">
+        <label for="id_name" class="form-label">姓名</label>
+        <input type="text" class="form-control" id="id_name" name="name" required>
+      </div>
+      <div class="form-group mb-3">
+        <label for="id_username" class="form-label">帳號</label>
+        <input type="text" class="form-control" id="id_username" name="username" required>
+      </div>
+      <div class="form-group mb-3 social-field d-none">
+        <label for="id_company" class="form-label">公司</label>
+        <input type="text" class="form-control" id="id_company" name="company" required>
+      </div>
+      <div class="form-group mb-3 social-field d-none">
+        <label for="id_job" class="form-label">職稱</label>
+        <input type="text" class="form-control" id="id_job" name="job" required>
+      </div>
+      <div class="form-group mb-3">
+        <label for="id_email" class="form-label">電子郵件</label>
+        <input type="email" class="form-control" id="id_email" name="email" required>
+      </div>
+      <div class="form-group mb-3">
+        <label for="id_password1" class="form-label">密碼</label>
+        <input type="password" class="form-control" id="id_password1" name="password1" required>
+      </div>
+      <div class="form-group mb-3">
+        <label for="id_password2" class="form-label">確認密碼</label>
+        <input type="password" class="form-control" id="id_password2" name="password2" required>
+      </div>
+      <button type="submit" class="register-submit-btn">註冊</button>
+      <div class="register-link mt-3">
+        已經有帳號了嗎? <a href="{% url 'Login' %}">登入</a>
+      </div>
+    </form>
+  </div>
 </div>
 {% endblock %}

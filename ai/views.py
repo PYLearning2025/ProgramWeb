@@ -1,15 +1,13 @@
 from django.shortcuts import render
 from openai import OpenAI
-from questions.forms import QuestionForm
 import os
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import DifficultyEvaluation, DifficultyEvaluationQuestion
-from questions.models import Question
+# from .models import DifficultyEvaluation, DifficultyEvaluationQuestion
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-@csrf_exempt  # 如果你已經有 CSRF token 驗證可移除這行
+@csrf_exempt
 def analyze_question(request):
     if request.method == "POST":
         data = request.POST
