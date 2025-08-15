@@ -21,17 +21,17 @@ def userinfo(request):
             # 只驗證 info_form
             if info_form.is_valid():
                 info_form.save()
-                return JsonResponse({'success': True})
+                return JsonResponse({'success': True, 'message': '儲存成功'})
             else:
-                return JsonResponse({'success': False})
+                return JsonResponse({'success': False, 'message': '儲存失敗'})
         else:
             # 一般情況兩個都驗證
             if info_form.is_valid() and email_form.is_valid():
                 info_form.save()
                 email_form.save()
-                return JsonResponse({'success': True})
+                return JsonResponse({'success': True, 'message': '儲存成功'})
             else:
-                return JsonResponse({'success': False})
+                return JsonResponse({'success': False, 'message': '儲存失敗'})
     else:
         info_form = UserInfoForm(instance=user_info, category=request.user.category)
         email_form = UserEmailForm(instance=request.user)
@@ -44,6 +44,10 @@ def userinfo(request):
 def update_profile_img(request):
     if not request.user.is_authenticated:
         return JsonResponse({'success': False, 'error': '未登入'})
+
+    if not hasattr(request.user, 'user_info'):
+        request.user.user_info = UserInfo.objects.create(user=request.user)
+    
     user_info = request.user.user_info
     form = ProfileImageForm(request.POST, request.FILES, instance=user_info)
     if form.is_valid():

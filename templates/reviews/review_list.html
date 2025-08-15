@@ -1,22 +1,22 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
 
-{% block title %}題目列表{% endblock %}
+{% block title %}可評分題目列表{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/questions/list.css' %}">
+<link rel="stylesheet" href="{% static 'css/reviews/review.css' %}">
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'js/questions/list.js' %}"></script>
+<script src="{% static 'js/reviews/review_list.js' %}"></script>
 {% endblock %}
 
 {% block content %}
 <div class="container py-5">
   <!-- 頁面標題 -->
   <div class="text-center mb-5">
-    <h1 class="display-4 fw-bold text-primary mb-3">程式設計題庫</h1>
-    <p class="lead text-muted">挑戰各種難度的 Python 程式題目，提升您的程式能力和解決問題的思維</p>
+    <h1 class="display-4 fw-bold text-primary mb-3">評分題目</h1>
+    <p class="lead text-muted">查看您已作答的題目，為它們進行評分</p>
   </div>
 
   <!-- 篩選和搜尋區域 -->
@@ -29,19 +29,16 @@
     <div class="card-body">
       <div class="row g-3">
         <div class="col-lg-6">
-          <label class="form-label fw-semibold text-muted mb-2">難度篩選</label>
-          <div class="btn-group w-100" role="group" aria-label="難度篩選">
-            <button type="button" class="level-filter btn active" data-level="all">
+          <label class="form-label fw-semibold text-muted mb-2">評分狀態篩選</label>
+          <div class="btn-group w-100" role="group" aria-label="評分狀態篩選">
+            <button type="button" class="status-filter btn active" data-status="all">
               <i class="bi bi-list-ul me-1"></i>全部
             </button>
-            <button type="button" class="level-filter btn" data-level="easy">
-              <i class="bi bi-circle-fill me-1"></i>簡單
+            <button type="button" class="status-filter btn" data-status="pending">
+              <i class="bi bi-clock me-1"></i>待評分
             </button>
-            <button type="button" class="level-filter btn" data-level="medium">
-              <i class="bi bi-circle-fill me-1"></i>中等
-            </button>
-            <button type="button" class="level-filter btn" data-level="hard">
-              <i class="bi bi-circle-fill me-1"></i>困難
+            <button type="button" class="status-filter btn" data-status="reviewed">
+              <i class="bi bi-check-circle me-1"></i>已評分
             </button>
           </div>
         </div>
@@ -63,7 +60,7 @@
       <!-- 篩選結果統計 -->
       <div class="mt-3 pt-3 border-top">
         <small class="text-muted">
-          <span id="filter-stats">顯示全部 {{ questions.count }} 題</span>
+          <span id="filter-stats">顯示全部 {{ questions_data.count }} 題</span>
         </small>
       </div>
     </div>
@@ -71,43 +68,48 @@
 
   <!-- 題目列表 -->
   <div id="questions-container" class="row g-4">
-    {% if questions %}
-    {% for question in questions %}
-    <div class="col-12 col-md-6 col-xl-4" data-level="{{ question.level }}" data-title="{{ question.title|lower }}"
-      data-description="{{ question.description|lower }}">
+    {% if questions_data %}
+    {% for item in questions_data %}
+    <div class="col-12 col-md-6 col-xl-4" data-status="{% if item.has_reviewed %}reviewed{% else %}pending{% endif %}"
+      data-reviewed="{{ item.has_reviewed|yesno:'true,false' }}" data-title="{{ item.question.title|lower }}"
+      data-content="{{ item.question.content|lower }}">
       <div class="card h-100 question-card">
         <div class="card-body p-4">
           <div class="d-flex justify-content-between align-items-start mb-3">
-            <span class="level-badge level-{{ question.level }}">
-              <i class="bi bi-circle-fill me-1"></i>
-              {% if question.level == 'easy' %}簡單
-              {% elif question.level == 'medium' %}中等
-              {% elif question.level == 'hard' %}困難
-              {% else %}{{ question.level }}
-              {% endif %}
+            <span class="status-badge status-{% if item.has_reviewed %}reviewed{% else %}pending{% endif %}"
+              data-reviewed="{{ item.has_reviewed|yesno:'true,false' }}">
+              <i class="bi {% if item.has_reviewed %}bi-check-circle{% else %}bi-clock{% endif %} me-1"></i>
+              {% if item.has_reviewed %}已評分{% else %}待評分{% endif %}
             </span>
-            <small class="text-muted fw-medium">#{{ question.id }}</small>
+            <small class="text-muted fw-medium">#{{ item.question.id }}</small>
           </div>
 
           <h5 class="card-title mb-3 question-title">
-            <a href="{% url 'QuestionDetail' question.id %}" class="text-dark text-decoration-none stretched-link">
-              {{ question.title }}
+            <a href="{% url 'QuestionDetail' item.question.id %}" class="text-dark text-decoration-none stretched-link">
+              {{ item.question.title }}
             </a>
           </h5>
 
-          <p class="card-text text-muted mb-4 question-description">
-            {{ question.content|truncatewords:20 }}
+          <p class="card-text text-muted mb-4 question-content">
+            {{ item.question.content|truncatewords:20 }}
           </p>
 
           <div class="d-flex justify-content-between align-items-center mt-auto">
             <div class="d-flex align-items-center">
               <i class="bi bi-person-circle me-1 text-muted"></i>
-              <small class="text-muted">{{ question.user.username }}</small>
+              <small class="text-muted">{{ item.question.user.username }}</small>
             </div>
-            <small class="text-muted">
-              <i class="bi bi-calendar3 me-1"></i>
-              {{ question.created_at|date:"m/d" }}
-            </small>
+            <div>
+              {% if not item.has_reviewed %}
+              <a href="{{ item.review_url }}" class="btn btn-primary btn-sm">
+                <i class="bi bi-star me-1"></i>開始評分
+              </a>
+              {% else %}
+              <button class="btn btn-success btn-sm" disabled>
+                <i class="bi bi-check-circle me-1"></i>已評分
+              </button>
+              {% endif %}
+            </div>
           </div>
         </div>
       </div>
@@ -118,17 +120,11 @@
       <div class="text-center py-5">
         <div class="empty-state">
           <i class="bi bi-inbox display-1 text-muted mb-3"></i>
-          <h4 class="text-muted mb-3">目前沒有題目</h4>
-          <p class="text-muted mb-4">還沒有任何程式題目，成為第一個出題者吧！</p>
-          {% if user.is_authenticated %}
-          <a href="{% url 'CreateQuestion' %}" class="btn btn-primary btn-lg">
-            <i class="bi bi-plus-circle me-2"></i>新增題目
+          <h4 class="text-muted mb-3">目前沒有可評分的題目</h4>
+          <p class="text-muted mb-4">您需要先作答一些題目才能進行評分。</p>
+          <a href="{% url 'QuestionList' %}" class="btn btn-primary btn-lg">
+            <i class="bi bi-arrow-right me-2"></i>瀏覽題目
           </a>
-          {% else %}
-          <a href="{% url 'Login' %}" class="btn btn-primary btn-lg">
-            <i class="bi bi-box-arrow-in-right me-2"></i>登入後新增題目
-          </a>
-          {% endif %}
         </div>
       </div>
     </div>
@@ -150,7 +146,7 @@
   </div>
 
   <!-- 分頁導航 -->
-  {% if questions %}
+  {% if questions_data %}
   <div class="d-flex justify-content-center mt-5" id="pagination-wrapper">
     <nav aria-label="Page navigation">
       <ul class="pagination pagination-lg">

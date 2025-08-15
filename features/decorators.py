@@ -1,6 +1,4 @@
 from django.shortcuts import render
-from django.http import HttpResponseForbidden
-from django.contrib import messages
 from functools import wraps
 from .models import FeatureToggle
 

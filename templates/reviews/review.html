@@ -8,6 +8,10 @@
 {% endblock %}
 
 {% block extra_js %}
+<script>
+  let existingReview = "{{ review|escapejs }}";
+  let isAlreadyReviewed = "{{ already_reviewed }}";
+</script>
 <script src="{% static 'js/reviews/review.js' %}"></script>
 {% endblock %}
 
@@ -25,33 +29,42 @@
           <p class="card-text"><strong>難度 Level：<br></strong>{{ question.get_level_display }}</p>
           <p class="card-text"><strong>主題 Topics：<br></strong>
             {% for topic in question.topics.all %}
-              <span class="badge bg-info text-dark">{{ topic.c_name }}</span>
+            <span class="badge bg-info text-dark">{{ topic.c_name }}</span>
             {% empty %}
-              <span class="text-muted">無</span>
+            <span class="text-muted">無</span>
             {% endfor %}
           </p>
           <p class="card-text"><strong>輸入格式 Input Format：<br></strong>{{ question.input_format }}</p>
           <p class="card-text"><strong>輸出格式 Output Format：<br></strong>{{ question.output_format }}</p>
-          <p class="card-text"><strong>輸入範例 Input Example：<br></strong><pre>{{ question.input_example }}</pre></p>
-          <p class="card-text"><strong>輸出範例 Output Example：<br></strong><pre>{{ question.output_example }}</pre></p>
+          <p class="card-text"><strong>輸入範例 Input Example：<br></strong>
+          <pre>{{ question.input_example }}</pre>
+          </p>
+          <p class="card-text"><strong>輸出範例 Output Example：<br></strong>
+          <pre>{{ question.output_example }}</pre>
+          </p>
           <p class="card-text"><strong>標籤 Tags：</strong>
             {% for tag in question.tags.all %}
-              <span class="badge bg-secondary">{{ tag.tag }}</span>
+            <span class="badge bg-secondary">{{ tag.tag }}</span>
             {% empty %}
-              <span class="text-muted">無</span>
+            <span class="text-muted">無</span>
             {% endfor %}
           </p>
           {% if question.hint %}
           <p class="card-text"><strong>提示 Hint：<br></strong>{{ question.hint }}</p>
           {% endif %}
           {% if question.reference %}
-          <p class="card-text"><strong>參考資料 Reference：</strong><a href="{{ question.reference }}" target="_blank">{{ question.reference }}</a></p>
+          <p class="card-text"><strong>參考資料 Reference：</strong><a href="{{ question.reference }}" target="_blank">{{
+              question.reference }}</a></p>
           {% endif %}
           {% if question.answer %}
-          <p class="card-text"><strong>答案 Answer：</strong><pre>{{ question.answer }}</pre></p>
+          <p class="card-text"><strong>答案 Answer：</strong>
+          <pre>{{ question.answer }}</pre>
+          </p>
           {% endif %}
           {# 如需顯示答案，取消註解 #}
-          {# <p class="card-text"><strong>答案 Answer：</strong><pre>{{ question.answer }}</pre></p> #}
+          {# <p class="card-text"><strong>答案 Answer：</strong>
+          <pre>{{ question.answer }}</pre>
+          </p> #}
         </div>
       </div>
     </div>
@@ -61,7 +74,7 @@
           <h4 class="mb-0">評分表單 Review Form</h4>
         </div>
         <div class="card-body">
-          <form method="post">
+          <form method="post" id="reviewForm">
             {% csrf_token %}
             <div class="mb-3">
               <label class="form-label">題目正確性 (0-5)</label>
@@ -111,7 +124,7 @@
               <label class="form-label">對答案的建議</label>
               <textarea class="form-control" name="answer_advice" rows="3" required></textarea>
             </div>
-            <button type="submit" class="btn btn-primary">送出評分 Submit Review</button>
+            <button type="submit" class="btn btn-primary" id="submitButton">送出評分</button>
           </form>
         </div>
       </div>

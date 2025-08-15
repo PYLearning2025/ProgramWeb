@@ -1,41 +1,41 @@
 .question-card {
-    transition: transform 0.3s, box-shadow 0.3s;
-    border-radius: 10px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  border-radius: 10px;
 }
 
 .question-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
 }
 
 .question-card .card-title {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .question-card .card-text {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    -webkit-box-orient: vertical;
-    min-height: 4.5rem;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  min-height: 4.5rem;
 }
 
 .alert-info {
-    background-color: #e3f2fd;
-    border-color: #bee5eb;
-    color: #0c5460;
-    border-radius: 10px;
-    padding: 1rem;
+  background-color: #e3f2fd;
+  border-color: #bee5eb;
+  color: #0c5460;
+  border-radius: 10px;
+  padding: 1rem;
 }
 
 /* 增加卡片間距與邊界的一致性 */
 .card-body {
-    padding: 1.5rem 1.5rem 0.75rem;
+  padding: 1.5rem 1.5rem 0.75rem;
 }
 
 .card-footer {
-    padding: 0.75rem 1.5rem 1.5rem;
+  padding: 0.75rem 1.5rem 1.5rem;
 }
