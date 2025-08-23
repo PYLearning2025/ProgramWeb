@@ -1,22 +1,35 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}404 - 頁面未找到{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/errors/error-404.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}
+
+{% block extra_js_bottom %}
+<script src="{% static 'js/errors/error-base.js' %}"></script>
+{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-6 text-center">
-      <div class="card">
-        <div class="card-body">
-          <i class="fas fa-search text-info" style="font-size: 4rem;"></i>
-          <h1 class="mt-3">404</h1>
-          <h2>頁面未找到</h2>
-          <p class="text-muted">
-            抱歉，您要尋找的頁面不存在。
-          </p>
-          <a href="{% url 'Index' %}" class="btn btn-primary">
-            返回首頁
-          </a>
+<div class="error-page">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6 col-md-8">
+        <div class="card error-card">
+          <div class="card-body text-center p-5">
+            <i class="fas fa-search error-icon"></i>
+            <h1 class="error-title">404</h1>
+            <h2 class="error-subtitle">頁面未找到</h2>
+            <p class="error-description">
+              抱歉，您要尋找的頁面不存在。<br>
+              可能是網址輸入錯誤或頁面已被移除。
+            </p>
+            <a href="{% url 'Index' %}" class="btn error-btn">
+              <i class="fas fa-home me-2"></i>返回首頁
+            </a>
+          </div>
         </div>
       </div>
     </div>
