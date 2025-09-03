@@ -1,6 +1,7 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse,FileResponse, Http404
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 from django.core.paginator import Paginator
 from django.db.models import Q
 from .models import Unit, Material, MaterialCategory
@@ -42,9 +43,7 @@ def material_detail(request, material_id):
 #教材下載功能(限制需要登入)
 @login_required
 def material_download(request, material_id):
-    from django.http import FileResponse, Http404
-    import os
-    
+
     material = get_object_or_404(Material, id=material_id)
     
     if not material.pdf_file:
@@ -55,15 +54,14 @@ def material_download(request, material_id):
     
     if not os.path.exists(file_path):
         raise Http404("PDF檔案不存在")
-    
-    # 讀取檔案內容
-    with open(file_path, 'rb') as pdf_file:
-        response = FileResponse(pdf_file.read(), content_type='application/pdf')
-        
-    # 設定下載檔名
+    try:
+        file_handle = open(file_path, 'rb')
+    except (OSError, IOError):
+        raise Http404("PDF檔案不存在")
+
     filename = f"{material.title}.pdf"
+    response = FileResponse(file_handle, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
-    
     return response
 
 # 教材搜尋功能
@@ -152,7 +150,7 @@ def add_unit(request):
                 return JsonResponse({
                     'success': True,
                     'message': f'單元「{unit.title}」新增成功！',
-                    'redirect': 'ManageMaterials'
+                    'redirect': reverse('ManageMaterials')
                 })
         else:
             return JsonResponse({
@@ -213,13 +211,13 @@ def add_material(request):
                     return JsonResponse({
                         'success': True,
                         'message': f'教材「{title}」新增成功！但偵測到此PDF檔案與現有教材「{duplicate_material.title}」（{duplicate_material.unit.title}）內容相同。',
-                        'redirect': 'ManageMaterials'
+                        'redirect': reverse('ManageMaterials')
                     })
                 else:
                     return JsonResponse({
                         'success': True,
                         'message': f'教材「{title}」新增成功！',
-                        'redirect': 'ManageMaterials'
+                        'redirect': reverse('ManageMaterials')
                     })
         else:
             if not title:
@@ -253,7 +251,7 @@ def add_material(request):
 def add_category(request):
     if request.method == 'POST':
         name = request.POST.get('name')
-        description = request.POST.get('description')
+        description = request.POST.get('description') or ''
         
         if name:
             # 檢查是否已存在同名類型
@@ -270,7 +268,7 @@ def add_category(request):
                 return JsonResponse({
                     'success': True,
                     'message': f'類型「{category.name}」新增成功！',
-                    'redirect': 'ManageMaterials'
+                    'redirect': reverse('ManageMaterials')
                 })
         else:
             return JsonResponse({
@@ -294,7 +292,7 @@ def delete_material(request, material_id):
         return JsonResponse({
             'success': True,
             'message': f'教材「{material_title}」已成功刪除！',
-            'redirect': 'ManageMaterials'
+            'redirect': reverse('ManageMaterials')
         })
     
     page_title = f'刪除教材 - {material.title}'
@@ -317,7 +315,7 @@ def delete_unit(request, unit_id):
             return JsonResponse({
                 'success': True,
                 'message': f'單元「{unit_title}」已成功刪除！',
-                'redirect': 'ManageMaterials'
+                'redirect': reverse('ManageMaterials')
             })
     
     page_title = f'刪除單元 - {unit.title}'
@@ -334,7 +332,7 @@ def delete_category(request, category_id):
         return JsonResponse({
             'success': True,
             'message': f'類型「{category_name}」已成功刪除！',
-            'redirect': 'ManageMaterials'
+            'redirect': reverse('ManageMaterials')
         })
     
     page_title = f'刪除類型 - {category.name}'
@@ -366,7 +364,7 @@ def edit_unit(request, unit_id):
                 return JsonResponse({
                     'success': True,
                     'message': f'單元「{unit.title}」編輯成功！',
-                    'redirect': 'ManageMaterials'
+                    'redirect': reverse('ManageMaterials')
                 })
         else:
             return JsonResponse({
@@ -414,7 +412,7 @@ def edit_material(request, material_id):
                 return JsonResponse({
                     'success': True,
                     'message': f'教材「{material.title}」編輯成功！',
-                    'redirect': 'ManageMaterials'
+                    'redirect': reverse('ManageMaterials')
                 })
         else:
             return JsonResponse({
@@ -450,7 +448,7 @@ def edit_category(request, category_id):
                 return JsonResponse({
                     'success': True,
                     'message': f'類型「{category.name}」編輯成功！',
-                    'redirect': 'ManageMaterials'
+                    'redirect': reverse('ManageMaterials')
                 })
         else:
             return JsonResponse({
