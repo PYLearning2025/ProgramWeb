@@ -2,3 +2,8 @@ django==5.2.3
 psycopg2==2.9.10
 pillow==11.2.1
 python-dotenv==1.0.1
+langchain==0.3.27
+langchain-core==0.3.75
+langchain-google-genai==2.1.10
+langchain-text-splitters==0.3.11
+langsmith==0.4.25
