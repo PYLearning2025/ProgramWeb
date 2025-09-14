@@ -351,6 +351,16 @@ function aiAnalysis() {
       $("#ai-analysis-button").prop("disabled", true).text("AI分析完成").off("click");
       showToast("AI分析完成", 'success');
 
+      // 儲存 evaluation_id 供後續題目提交時使用
+      if (response.evaluation_id) {
+        $("#questionForm input[name='evaluation_id']").remove();
+        $("#questionForm").append(`<input type=\"hidden\" name=\"evaluation_id\" value=\"${response.evaluation_id}\">`);
+      }
+      if (response.question_id) {
+        $("#questionForm input[name='question_id']").remove();
+        $("#questionForm").append(`<input type="hidden" name="question_id" value="${response.question_id}">`);
+      }
+
       // 恢復提交按鈕
       $("button[type='submit']").prop("disabled", false).text("提交問題");
     },

@@ -6,21 +6,43 @@ from .models import Question, QuestionHistory, QuestionLog
 from answers.models import Answer
 from reviews.models import PeerReview
 from .forms import QuestionForm, QuestionDetailForm
+from ai.models import DifficultyEvaluation, DifficultyEvaluationQuestion
 from features.decorators import feature_required
 
 @login_required
 @feature_required('question_create')
 def question_create(request):
     if request.method == 'POST':
-        form = QuestionForm(request.POST, user=request.user)
+        question_id = request.POST.get('question_id')
+        instance = None
+        if question_id:
+            try:
+                instance = Question.objects.get(id=question_id)
+            except Question.DoesNotExist:
+                instance = None
+        form = QuestionForm(request.POST, instance=instance, user=request.user)
         if form.is_valid():
             question = form.save()
+             # 建立與AI分析關聯
+            evaluation_id = request.POST.get('evaluation_id')
+            if evaluation_id:
+                try:
+                    evaluation = DifficultyEvaluation.objects.get(id=evaluation_id)
+                    DifficultyEvaluationQuestion.objects.create(
+                        evaluation=evaluation,
+                        question=question
+                    )
+                except DifficultyEvaluation.DoesNotExist:
+                    pass
             # 記錄創建問題的日誌
             QuestionLog.objects.create(
                 question=question,
                 user=request.user,
                 action='created'
             )
+            
+            latest = QuestionHistory.objects.filter(question=question).order_by('-version').first()
+            next_ver = (latest.version if latest else 0) + 1
             # 創建問題的歷史記錄
             history = QuestionHistory.objects.create(
                 question=question,
@@ -35,7 +57,7 @@ def question_create(request):
                 answer=question.answer,
                 hint=question.hint,
                 reference=question.reference,
-                version=1
+                version=next_ver
             )
             # 設置多對多關係
             history.tags.set(question.tags.all())
