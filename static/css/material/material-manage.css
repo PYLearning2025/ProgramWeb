@@ -1,0 +1,188 @@
+/* Material 管理頁面樣式 */
+
+/* 表格列寬度 (專用列寬設定) */
+.table th.col-title {
+  width: 25%;
+}
+
+.table th.col-description {
+  width: 30%;
+}
+
+.table th.col-order {
+  width: 10%;
+}
+
+.table th.col-material-count {
+  width: 10%;
+}
+
+.table th.col-create-time {
+  width: 12%;
+}
+
+.table th.col-actions {
+  width: 13%;
+}
+
+.table th.col-unit {
+  width: 30%;
+}
+
+.table th.col-type {
+  width: 10%;
+}
+
+.table th.col-creator {
+  width: 10%;
+}
+
+.table th.col-name {
+  width: 25%;
+}
+
+.table th.col-description-wide {
+  width: 62%;
+}
+
+/* 搜尋框寬度 */
+.search-input-fixed {
+  width: 300px;
+}
+
+/* 通用小按鈕 */
+.btn-xs {
+  padding: 0.25rem 0.4rem;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  border-radius: 0.2rem;
+}
+
+/* 專用管理表格樣式 */
+.material-manage-table th {
+  white-space: nowrap;
+  vertical-align: middle;
+  border-bottom: 2px solid #dee2e6;
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+}
+
+.material-manage-table td {
+  vertical-align: middle;
+  word-wrap: break-word;
+  border-top: 1px solid #dee2e6;
+}
+
+.material-manage-table td:first-child {
+  font-weight: 500;
+}
+
+.material-manage-table {
+  table-layout: fixed;
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.material-manage-table th,
+.material-manage-table td {
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.material-manage-table th:last-child,
+.material-manage-table td:last-child {
+  text-align: center;
+}
+
+.manage-section {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.manage-section-header {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 8px 8px 0 0;
+  margin: 0;
+}
+
+.manage-section-body {
+  padding: 1.5rem;
+}
+
+.add-button {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  border: none;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.add-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+  color: white;
+}
+
+.action-buttons .btn {
+  margin: 0 0.125rem;
+}
+
+.stats-card {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+  border: 1px solid #dee2e6;
+}
+
+.stats-number {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.stats-label {
+  color: #6c757d;
+  margin-top: 0.5rem;
+}
+
+/* Generic table rules (from material-manage-extra) to cover bootstrap .table usages */
+.table th {
+  white-space: nowrap;
+  vertical-align: middle;
+  border-bottom: 2px solid #dee2e6;
+  background-color: #f8f9fa;
+}
+
+.table td {
+  vertical-align: middle;
+  word-wrap: break-word;
+  border-top: 1px solid #dee2e6;
+}
+
+.table td:first-child {
+  font-weight: 500;
+}
+
+.table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.table th,
+.table td {
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.table th:last-child,
+.table td:last-child {
+  text-align: center;
+}
