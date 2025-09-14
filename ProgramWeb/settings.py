@@ -29,8 +29,8 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = [os.environ.get("ALLOWED_HOSTS")]
-CSRF_TRUSTED_ORIGINS = [os.environ.get("CSRF_TRUSTED_ORIGINS")]
+ALLOWED_HOSTS = ['programwebdevelop.azurewebsites.net']
+CSRF_TRUSTED_ORIGINS = ['https://programwebdevelop.azurewebsites.net']
 
 LOGIN_URL = '/login/'
 
