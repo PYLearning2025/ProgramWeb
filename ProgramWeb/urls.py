@@ -26,6 +26,7 @@ import reviews.views as reviews_views
 import ai.views as ai_views
 import material.views as material_views
 import reports.views as reports_views
+import game.views as game_views
 from django.conf import settings
 from django.conf.urls.static import static
 from userinfos.views import update_profile_img
@@ -60,6 +61,9 @@ urlpatterns = [
     
     # -------- Reports URLs --------
     path("reports/", include("reports.urls")),
+
+    # -------- Game URLs --------
+    path("game/", include("game.urls")),
 
     # re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
     # re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),

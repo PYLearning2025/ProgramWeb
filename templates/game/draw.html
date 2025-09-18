@@ -1,0 +1,23 @@
+{% extends "base.html" %} {% load static %}
+
+<!-- {% block extra_css %}
+{% endblock %} -->
+{% block title %}抽卡{% endblock %}
+{% block extra_js %}
+<script>
+  let csrf_token = '{{ csrf_token }}';
+</script>
+<script src="{% static 'js/game/draw.js' %}"></script>
+{% endblock %} {% block content %}
+<div class="container text-center">
+  <div class="row">
+    <div class="card">
+      <div class="card-body">恭喜答對~~點擊下方按鈕開抽！</div>
+    </div>
+    <button type="button" class="btn btn-primary btn-lg" id="draw-button">
+      開抽╰(*°▽°*)╯
+    </button>
+    <!-- 去後端找獎品，然後跳轉到result -->
+  </div>
+</div>
+{% endblock %}

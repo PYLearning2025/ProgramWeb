@@ -1,0 +1,69 @@
+{% extends "base.html" %} {% load static %}
+{% block title %}遊戲區{% endblock %}
+
+<!-- {% block extra_css %}
+{% endblock %}-->
+{% block extra_js %}
+<script>
+  let question_id = "{{ question.id }}";
+  let csrf_token = "{{ csrf_token }}";
+</script>
+<script src="{% static 'js/game/game.js' %}"></script>
+{% endblock %} {% block content %}
+<div class="container text-center">
+  <div class="row">
+    <div class="card">
+      <div class="card-body">Q：{{ question }}</div>
+    </div>
+
+    <!-- 
+    1. 按下按鈕後禁用按鈕
+    2. 後端比對是否與答案一樣(答案為ABCD)，一樣的話跳轉到draw，不一樣的話跳轉到wrong
+    3. AI詢問功能
+    -->
+
+    <div class="row g-3">
+      <div class="col">
+        <button
+          type="button"
+          class="btn btn-primary btn-lg option-btn"
+          value="A"
+        >
+          {{ option_A }}
+        </button>
+      </div>
+      <div class="col">
+        <button
+          type="button"
+          class="btn btn-primary btn-lg option-btn"
+          value="B"
+        >
+          {{ option_B }}
+        </button>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col">
+        <button
+          type="button"
+          class="btn btn-primary btn-lg option-btn"
+          value="C"
+        >
+          {{ option_C }}
+        </button>
+      </div>
+      <div class="col">
+        <button
+          type="button"
+          class="btn btn-primary btn-lg option-btn"
+          value="D"
+        >
+          {{ option_D }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  {% endblock %}
+</div>

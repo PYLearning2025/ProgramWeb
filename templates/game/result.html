@@ -1,0 +1,33 @@
+{% extends "base.html" %} {% load static %}
+
+<!-- {% block extra_css %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/answers/answer.js' %}"></script>
+{% endblock %} -->
+{% block title %}抽獎結果{% endblock %} {% block content %}
+
+<div class="container text-center">
+  <div class="alert alert-warning" role="alert">
+    ~~恭喜獲得以下卡片~~
+  </div>
+  <div class="row justify-content-center">
+    <div class="card text-center" style="width: 18rem">
+      <img
+        src="{{ card_image_url }}"
+        class="card-img-top rounded"
+        alt="{{ card_name }}"
+      />
+      <div class="card-body">
+        <h5 class="card-title">{{ card_name }}</h5>
+        <p class="card-text">{{ card_description }}</p>
+      </div>
+    </div>
+    <a role="button" class="btn btn-primary btn-lg" href="{% url 'Game' %}"
+      >回題目</a
+    >
+  </div>
+
+  {% endblock %}
+</div>

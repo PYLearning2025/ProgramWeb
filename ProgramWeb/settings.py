@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "ai",  # AI app
     "material",  # Material app
     "features",  # Feature toggle app
+    "game", # game app
 ]
 
 MIDDLEWARE = [
