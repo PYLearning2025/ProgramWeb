@@ -20,3 +20,21 @@ class Answer(models.Model):
 
     def __str__(self):
         return f'Answer by {self.user.username} to {self.question.title}'
+
+class Transcript(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transcripts')
+    answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='transcripts')
+    result_code = models.CharField(max_length=10)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f'Transcript by {self.user.username} to {self.answer.question.title}'
+
+class Debug(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='debugs')
+    code = models.TextField()
+    result_code = models.CharField(max_length=10)
+    created_at = models.DateTimeField(auto_now_add=True)

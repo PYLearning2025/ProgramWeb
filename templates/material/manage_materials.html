@@ -4,47 +4,8 @@
 {% block title %}{{ page_title }} - 程式設計平台{% endblock %}
 
 {% block content %}
-<style>
-  .btn-xs {
-    padding: 0.25rem 0.4rem;
-    font-size: 0.75rem;
-    line-height: 1.2;
-    border-radius: 0.2rem;
-  }
-
-  .table th {
-    white-space: nowrap;
-    vertical-align: middle;
-    border-bottom: 2px solid #dee2e6;
-    background-color: #f8f9fa;
-  }
-
-  .table td {
-    vertical-align: middle;
-    word-wrap: break-word;
-    border-top: 1px solid #dee2e6;
-  }
-
-  .table td:first-child {
-    font-weight: 500;
-  }
-
-  .table {
-    table-layout: fixed;
-    width: 100%;
-  }
-
-  .table th,
-  .table td {
-    padding: 0.75rem;
-    text-align: left;
-  }
-
-  .table th:last-child,
-  .table td:last-child {
-    text-align: center;
-  }
-</style>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/material/material-manage.css' %}">
 
 <div class="container-fluid px-4 py-3">
   <!-- 頁面標題 -->
