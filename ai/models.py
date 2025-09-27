@@ -8,7 +8,7 @@ class DifficultyEvaluation(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.question.title} → {self.difficulty_score}"
+        return f"評估 #{self.id} → {self.difficulty_score[:20]}..."
     
 # 回饋對應題目
 class DifficultyEvaluationQuestion(models.Model):

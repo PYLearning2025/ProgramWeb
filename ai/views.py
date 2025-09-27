@@ -7,7 +7,6 @@ from langchain_core.output_parsers import StrOutputParser
 from .models import DifficultyEvaluation
 from questions.models import Question, QuestionHistory
 
-
 def _payload_from_request(data):
     return {
         "title": data.get('title') or "",
@@ -131,7 +130,6 @@ def analyze_question(request):
 
             difficulty_content = chain.invoke(payload)
 
-            # 難度判斷
             difficulty_score = "未知"
             if "困難" in difficulty_content:
                 difficulty_score = "困難"
