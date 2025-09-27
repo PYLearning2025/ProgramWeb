@@ -1,22 +1,35 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}400 - 錯誤請求{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/errors/error-400.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}
+
+{% block extra_js_bottom %}
+<script src="{% static 'js/errors/error-base.js' %}"></script>
+{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-6 text-center">
-      <div class="card">
-        <div class="card-body">
-          <i class="fas fa-exclamation-triangle text-warning" style="font-size: 4rem;"></i>
-          <h1 class="mt-3">400</h1>
-          <h2>錯誤請求</h2>
-          <p class="text-muted">
-            您的請求格式不正確，請檢查後重試。
-          </p>
-          <a href="{% url 'Index' %}" class="btn btn-primary">
-            返回首頁
-          </a>
+<div class="error-page">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6 col-md-8">
+        <div class="card error-card">
+          <div class="card-body text-center p-5">
+            <i class="fas fa-exclamation-triangle error-icon"></i>
+            <h1 class="error-title">400</h1>
+            <h2 class="error-subtitle">錯誤請求</h2>
+            <p class="error-description">
+              您的請求格式不正確。<br>
+              請檢查輸入內容後重新嘗試。
+            </p>
+            <a href="{% url 'Index' %}" class="btn error-btn">
+              <i class="fas fa-home me-2"></i>返回首頁
+            </a>
+          </div>
         </div>
       </div>
     </div>
