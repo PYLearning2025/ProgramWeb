@@ -37,7 +37,7 @@ class Question(models.Model):
 
 class QuestionHistory(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='history', verbose_name="問題")
-    # user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="擁有者")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="擁有者")
     title = models.CharField(max_length=200, blank=False, null=False, verbose_name="標題")
     content = models.TextField(blank=False, null=False, verbose_name="內容")
     topics = models.ManyToManyField('Topic', blank=False, verbose_name="主題")

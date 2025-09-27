@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/material/material-base.css' %}">
+<link rel="stylesheet" href="{% static 'css/material/material-forms.css' %}">
+{% endblock %}
+
+{% block title %}{{ page_title }} - 程式設計平台{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-3">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">新增類別</div>
+        <div class="card-body">
+          <form method="post" id="addCategoryForm">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="name" class="form-label">類別名稱</label>
+              <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="d-flex justify-content-end">
+              <button type="submit" class="btn btn-primary">新增</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">類別列表</div>
+        <div class="card-body">
+          <ul class="list-group">
+            {% for category in categories %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              {{ category.name }}
+              <div>
+                <a href="{% url 'EditCategory' category.id %}" class="btn btn-sm btn-outline-secondary">編輯</a>
+                <a href="{% url 'DeleteCategory' category.id %}" class="btn btn-sm btn-outline-danger">刪除</a>
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'js/material/add-category.js' %}"></script>
+<script src="{% static 'js/material/material-base.js' %}"></script>
+<script src="{% static 'js/material/material-forms.js' %}"></script>
+
+{% endblock %}

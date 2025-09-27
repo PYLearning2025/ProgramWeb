@@ -55,7 +55,7 @@ class RegisterForm(UserCreationForm):
         for field in self.fields:
             if 'class' not in self.fields[field].widget.attrs:
                 self.fields[field].widget.attrs['class'] = 'form-control'
-        self.fields['username'].label = '帳號'  # 預設
+        self.fields['username'].label = '帳號'
 
     def clean(self):
         cleaned_data = super().clean()

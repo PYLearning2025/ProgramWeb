@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}可評分題目列表{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/reviews/review.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/reviews/review_list.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <!-- 頁面標題 -->
+  <div class="text-center mb-5">
+    <h1 class="display-4 fw-bold text-primary mb-3">評分題目</h1>
+    <p class="lead text-muted">查看您已作答的題目，為它們進行評分</p>
+  </div>
+
+  <!-- 篩選和搜尋區域 -->
+  <div class="card shadow-sm mb-4 border-0 border-radius-lg">
+    <div class="card-header bg-white border-bottom-0">
+      <h5 class="card-title mb-0">
+        <i class="bi bi-funnel me-2"></i>篩選與搜尋
+      </h5>
+    </div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-lg-6">
+          <label class="form-label fw-semibold text-muted mb-2">評分狀態篩選</label>
+          <div class="btn-group w-100" role="group" aria-label="評分狀態篩選">
+            <button type="button" class="status-filter btn active" data-status="all">
+              <i class="bi bi-list-ul me-1"></i>全部
+            </button>
+            <button type="button" class="status-filter btn" data-status="pending">
+              <i class="bi bi-clock me-1"></i>待評分
+            </button>
+            <button type="button" class="status-filter btn" data-status="reviewed">
+              <i class="bi bi-check-circle me-1"></i>已評分
+            </button>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <label class="form-label fw-semibold text-muted mb-2">搜尋題目</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light border-end-0">
+              <i class="bi bi-search text-muted"></i>
+            </span>
+            <input type="text" id="search-input" class="form-control border-start-0" placeholder="輸入題目標題或關鍵字..."
+              aria-label="搜尋題目">
+            <button class="btn btn-primary border-0" type="button" id="search-btn">
+              搜尋
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 篩選結果統計 -->
+      <div class="mt-3 pt-3 border-top">
+        <small class="text-muted">
+          <span id="filter-stats">顯示全部 {{ questions_data.count }} 題</span>
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <!-- 題目列表 -->
+  <div id="questions-container" class="row g-4">
+    {% if questions_data %}
+    {% for item in questions_data %}
+    <div class="col-12 col-md-6 col-xl-4" data-status="{% if item.has_reviewed %}reviewed{% else %}pending{% endif %}"
+      data-reviewed="{{ item.has_reviewed|yesno:'true,false' }}" data-title="{{ item.question.title|lower }}"
+      data-content="{{ item.question.content|lower }}">
+      <div class="card h-100 question-card">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <span class="status-badge status-{% if item.has_reviewed %}reviewed{% else %}pending{% endif %}"
+              data-reviewed="{{ item.has_reviewed|yesno:'true,false' }}">
+              <i class="bi {% if item.has_reviewed %}bi-check-circle{% else %}bi-clock{% endif %} me-1"></i>
+              {% if item.has_reviewed %}已評分{% else %}待評分{% endif %}
+            </span>
+            <small class="text-muted fw-medium">#{{ item.question.id }}</small>
+          </div>
+
+          <h5 class="card-title mb-3 question-title">
+            <a href="{% url 'QuestionDetail' item.question.id %}" class="text-dark text-decoration-none stretched-link">
+              {{ item.question.title }}
+            </a>
+          </h5>
+
+          <p class="card-text text-muted mb-4 question-content">
+            {{ item.question.content|truncatewords:20 }}
+          </p>
+
+          <div class="d-flex justify-content-between align-items-center mt-auto">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-person-circle me-1 text-muted"></i>
+              <small class="text-muted">{{ item.question.user.username }}</small>
+            </div>
+            <div>
+              {% if not item.has_reviewed %}
+              <a href="{{ item.review_url }}" class="btn btn-primary btn-sm">
+                <i class="bi bi-star me-1"></i>開始評分
+              </a>
+              {% else %}
+              <button class="btn btn-success btn-sm" disabled>
+                <i class="bi bi-check-circle me-1"></i>已評分
+              </button>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="col-12">
+      <div class="text-center py-5">
+        <div class="empty-state">
+          <i class="bi bi-inbox display-1 text-muted mb-3"></i>
+          <h4 class="text-muted mb-3">目前沒有可評分的題目</h4>
+          <p class="text-muted mb-4">您需要先作答一些題目才能進行評分。</p>
+          <a href="{% url 'QuestionList' %}" class="btn btn-primary btn-lg">
+            <i class="bi bi-arrow-right me-2"></i>瀏覽題目
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- 無搜尋結果 -->
+  <div id="no-results" class="row g-4" style="display: none;">
+    <div class="col-12">
+      <div class="text-center py-5">
+        <i class="bi bi-search display-1 text-muted mb-3"></i>
+        <h4 class="text-muted mb-3">找不到符合條件的題目</h4>
+        <p class="text-muted mb-4">請嘗試調整搜尋關鍵字或篩選條件</p>
+        <button class="btn btn-outline-primary" id="reset-filters">
+          <i class="bi bi-arrow-clockwise me-2"></i>重置篩選
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 分頁導航 -->
+  {% if questions_data %}
+  <div class="d-flex justify-content-center mt-5" id="pagination-wrapper">
+    <nav aria-label="Page navigation">
+      <ul class="pagination pagination-lg">
+        <!-- 分頁內容由 JavaScript 動態生成 -->
+      </ul>
+    </nav>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
