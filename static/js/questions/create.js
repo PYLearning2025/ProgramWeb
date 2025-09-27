@@ -5,10 +5,10 @@ $(document).ready(function () {
   // 根據頁面模式初始化按鈕狀態
   if (pageMode === 'create') {
     // 創建模式：一開始就禁用提交按鈕
-    $("button[type='submit']").prop("disabled", true).text("請先進行AI分析");
+    $("#submit-button").prop("disabled", true).text("請先進行AI分析");
   } else if (pageMode === 'update') {
     // 更新模式：直接啟用提交按鈕，並設置aiAnalyzed為true
-    $("button[type='submit']").prop("disabled", false).text("更新問題");
+    $("#submit-button").prop("disabled", false).text("更新問題");
     aiAnalyzed = true; // 更新模式下不需要AI分析
   }
 
@@ -327,7 +327,7 @@ function aiAnalysis() {
   }
 
   // 禁用提交按鈕
-  $("button[type='submit']").prop("disabled", true).text("AI分析中...");
+  $("#submit-button").prop("disabled", true).text("AI分析中...");
 
   // 顯示正在分析提示
   const $title = $("#ai-analysis-title");
@@ -362,7 +362,7 @@ function aiAnalysis() {
       }
 
       // 恢復提交按鈕
-      $("button[type='submit']").prop("disabled", false).text("提交問題");
+      $("#submit-button").prop("disabled", false).text("提交問題");
     },
     error: function (xhr, status, error) {
       // 只console.log錯誤，不顯示在畫面
@@ -371,7 +371,7 @@ function aiAnalysis() {
       showToast("AI分析失敗，請稍後再試", 'error');
 
       // 恢復提交按鈕和原始狀態
-      $("button[type='submit']").prop("disabled", true).text("提交問題");
+      $("#submit-button").prop("disabled", true).text("提交問題");
       $("#ai-analysis-button").prop("disabled", false).text("AI分析");
       $title.text("注意事項");
       $content.html(`
