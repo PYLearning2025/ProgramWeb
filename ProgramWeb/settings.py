@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     "material",  # Material app
     "features",  # Feature toggle app
     "game", # game app
+    "storages",  # For handling file storage
 ]
 
 MIDDLEWARE = [
@@ -99,6 +100,12 @@ WSGI_APPLICATION = "ProgramWeb.wsgi.application"
 #         "NAME": BASE_DIR / "db.sqlite3",
 #     }
 # }
+
+
+# 填入您的 Azure 資訊
+AZURE_ACCOUNT_NAME = os.getenv('AZURE_ACCOUNT_NAME')
+AZURE_ACCOUNT_KEY = os.getenv('AZURE_ACCOUNT_KEY')
+AZURE_CONTAINER = os.getenv('AZURE_CONTAINER')
 
 DATABASES = {
     'default': {
@@ -150,6 +157,9 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # WhiteNoise storage backend for production
 STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.azure_storage.AzureStorage",
+    },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },

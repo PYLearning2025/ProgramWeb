@@ -9,3 +9,5 @@ langchain-google-genai==2.1.10
 langchain-text-splitters==0.3.11
 langsmith==0.4.25
 whitenoise==6.11.0
+django-storages==1.14.6
+azure-storage-blob==12.26.0
