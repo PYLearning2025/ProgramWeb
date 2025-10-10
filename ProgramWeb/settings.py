@@ -112,6 +112,7 @@ DATABASES = {
         'USER': os.getenv('DATABASE_USER'),  #資料庫帳號
         'PASSWORD': os.getenv('DATABASE_PASSWORD'),  #資料庫密碼
         'HOST': os.getenv('DATABASE_HOST'),  #Server(伺服器)位址
+        'PORT': os.getenv('DATABASE_PORT', '5432'),  #連接埠
     }
 }
 

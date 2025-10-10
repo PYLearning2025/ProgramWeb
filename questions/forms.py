@@ -205,6 +205,28 @@ class QuestionDetailForm(forms.ModelForm):
         exclude = ['answer_display', 'as_homework', 'is_approved', 'is_active', 'updated_by', 'view_count', 'created_at', 'updated_at']
 
     def __init__(self, *args, **kwargs):
+        # 檢查是否應該顯示答案
+        show_answer = kwargs.pop('show_answer', False)
         super().__init__(*args, **kwargs)
+        
+        # 如果不應該顯示答案，就從表單中移除答案欄位
+        if not show_answer and 'answer' in self.fields:
+            del self.fields['answer']
+            
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control', 'disabled': True})
+
+#為歷史版本的問題專門創建新的表單
+class QuestionHistoryDetailForm(forms.ModelForm):
+    class Meta:
+        model = QuestionHistory
+        exclude = ['created_at', 'updated_at']
+
+    def __init__(self, *args, **kwargs):
+        show_answer = kwargs.pop('show_answer', False)
+        super().__init__(*args, **kwargs)
+        if not show_answer and 'answer' in self.fields:
+            del self.fields['answer']
+            
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'form-control', 'disabled': True})

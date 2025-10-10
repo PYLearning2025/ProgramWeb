@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from .models import Question, QuestionHistory, QuestionLog
 from answers.models import Answer
 from reviews.models import PeerReview
-from .forms import QuestionForm, QuestionDetailForm
+from .forms import QuestionForm, QuestionDetailForm, QuestionHistoryDetailForm
 from ai.models import DifficultyEvaluation, DifficultyEvaluationQuestion
 from features.decorators import feature_required
 
@@ -76,8 +76,16 @@ def question_detail(request, question_id):
     except Question.DoesNotExist:
         return render(request, 'errors/404.html', status=404)
 
+    show_answer = False
+    if request.user.is_staff:
+        show_answer = True
+    elif question.user == request.user:
+        show_answer = True
+    elif question.answer_display:
+        show_answer = True
+
     # 使用表單顯示問題詳細信息
-    form = QuestionDetailForm(instance=question)
+    form = QuestionDetailForm(instance=question, show_answer=show_answer)
 
     # 獲取問題的歷史記錄
     history = QuestionHistory.objects.filter(question=question).order_by('-version')
@@ -99,8 +107,15 @@ def question_version(request, question_id, version):
     except (Question.DoesNotExist, QuestionHistory.DoesNotExist):
         return render(request, 'errors/404.html', status=404)
 
-    # 使用表單顯示問題歷史版本的詳細信息
-    form = QuestionDetailForm(instance=history_question)
+    show_answer = False
+    if request.user.is_staff:
+        show_answer = True
+    elif question.user == request.user:
+        show_answer = True
+    elif question.answer_display:
+        show_answer = True
+
+    form = QuestionHistoryDetailForm(instance=history_question, show_answer=show_answer)
 
     return render(request, 'questions/detail.html', locals())
 

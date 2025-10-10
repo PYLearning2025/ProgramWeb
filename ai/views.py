@@ -150,6 +150,7 @@ def analyze_question(request):
                 'question_id': draft_q.id
             })
         except Exception as e:
+            print(e)
             return JsonResponse({'error': str(e)}, status=500)
 
     return JsonResponse({'error': '只接受POST請求'}, status=400)

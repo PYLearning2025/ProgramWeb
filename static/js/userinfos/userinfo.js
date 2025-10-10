@@ -33,6 +33,7 @@ $(document).ready(function () {
 
   // 表單送出（含一般儲存與頭像變更）
   function submitForm(formData) {
+    // formdata student_id確認
     $saveBtn.prop('disabled', true).text('儲存中...');
     $.ajax({
       url: '',
