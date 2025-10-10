@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 import os
 from django.http import JsonResponse
-from google import genai
+import google.genai as genai
 from .models import Question, Card, CardRecord, AIResponse, GameLog, QuestionLog, ChallengeLog
 from django.contrib.auth.decorators import login_required
 from .decorators import answer_over, draw_over
