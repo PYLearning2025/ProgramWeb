@@ -1,0 +1,31 @@
+{% extends "base.html" %} {% load static %}
+
+{% block title %}查看卡片{% endblock %}
+
+{% block content %}
+
+<div class="container text-center">
+    {% for record in card_records %}
+        {% if forloop.counter0|divisibleby:3 %}
+            <div class="row justify-content-center mb-4">
+        {% endif %}
+        <div class="card text-center mx-2" style="width: 18rem">
+            <img
+                src="https://programweb.blob.core.windows.net/media/{{ record.card.card_image }}"
+                class="card-img-top rounded"
+                alt="{{ record.card.name }}"
+            />
+            <div class="card-body">
+                <h5 class="card-title">{{ record.card.card_name }}</h5>
+                <p class="card-text">{{ record.card.card_description }}</p>
+            </div>
+        </div>
+    {% if forloop.counter0|add:"1"|divisibleby:3 or forloop.last %}
+            </div>
+    {% endif %}
+    {% endfor %}
+    <a role="button" class="btn btn-primary btn-lg" href="{% url 'Game' %}"
+      >回題目</a
+    >
+</div>
+{% endblock %}

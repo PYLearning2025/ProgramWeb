@@ -5,6 +5,7 @@ from userinfos.models import UserInfo
 from .forms import UserInfoForm, UserEmailForm, ProfileImageForm
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
+import re
 
 @login_required
 def userinfo(request):
@@ -21,12 +22,15 @@ def userinfo(request):
             # 只驗證 info_form
             if info_form.is_valid():
                 info_form.save()
+
                 return JsonResponse({'success': True, 'message': '儲存成功'})
             else:
                 return JsonResponse({'success': False, 'message': '儲存失敗'})
         else:
             # 一般情況兩個都驗證
             if info_form.is_valid() and email_form.is_valid():
+                if not re.match(r'^\d{9}$', info_form.cleaned_data['student_id']):
+                    return JsonResponse({"success": False, "message": "儲存失敗，學號格式錯誤，請輸入9位數字"})
                 info_form.save()
                 email_form.save()
                 return JsonResponse({'success': True, 'message': '儲存成功'})

@@ -8,4 +8,5 @@ urlpatterns = [
     path("result/<int:card_id>/", views.result, name="Result"),
     path("check_answer/", views.check_answer, name="Check_Answer"),
     path("draw_card/", views.draw_card, name="Draw_Card"),
+    path("view_card/", views.view_card, name="View_Card"),
 ]

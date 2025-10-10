@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 import os
 from django.http import JsonResponse
-from google import genai
+import google.genai as genai
 from .models import Question, Card, CardRecord, AIResponse, GameLog, QuestionLog, ChallengeLog
 from django.contrib.auth.decorators import login_required
 from .decorators import answer_over, draw_over
@@ -9,7 +9,18 @@ import random
 from django.urls import reverse
 from django.db.models import F
 
-client = genai.Client()
+_client = None
+
+def get_genai_client():
+    global _client
+    if _client is None:
+        api_key = os.getenv('GEMINI_API_KEY')
+        if api_key:
+            _client = genai.Client(api_key=api_key)
+        else:
+            # If no API key, return None and handle gracefully
+            _client = None
+    return _client
 
 @login_required
 @answer_over
@@ -63,3 +74,11 @@ def draw_card(request):
         GameLog.objects.create(student=request.user, card=card)
         return JsonResponse({'redirect_url': f'/game/result/{card.id}/'})
     return JsonResponse({'result': 'error', 'message': 'Invalid request method'})
+
+@login_required
+def view_card(request):
+    card_records = CardRecord.objects.filter(student=request.user)
+    
+    print(card_records)
+    # card_records = card_records.card
+    return render(request, 'game/view_card.html', {"card_records": card_records})

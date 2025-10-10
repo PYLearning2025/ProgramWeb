@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     "material",  # Material app
     "features",  # Feature toggle app
     "game", # game app
+    "storages",  # For Azure Storage
 ]
 
 MIDDLEWARE = [
@@ -100,6 +101,10 @@ WSGI_APPLICATION = "ProgramWeb.wsgi.application"
 #     }
 # }
 
+AZURE_ACCOUNT_NAME = os.getenv('AZURE_ACCOUNT_NAME')
+AZURE_ACCOUNT_KEY = os.getenv('AZURE_ACCOUNT_KEY')
+AZURE_CONTAINER = os.getenv('AZURE_CONTAINER')
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',  #PostgreSQL
@@ -107,6 +112,7 @@ DATABASES = {
         'USER': os.getenv('DATABASE_USER'),  #資料庫帳號
         'PASSWORD': os.getenv('DATABASE_PASSWORD'),  #資料庫密碼
         'HOST': os.getenv('DATABASE_HOST'),  #Server(伺服器)位址
+        'PORT': os.getenv('DATABASE_PORT', '5432'),  #連接埠
     }
 }
 
@@ -150,6 +156,9 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # WhiteNoise storage backend for production
 STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.azure_storage.AzureStorage",
+    },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
