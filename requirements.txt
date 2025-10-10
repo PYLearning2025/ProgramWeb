@@ -11,3 +11,4 @@ langsmith==0.4.25
 whitenoise==6.11.0
 django-storages==1.14.6
 azure-storage-blob==12.26.0
+google-genai==1.39.1
