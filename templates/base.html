@@ -77,6 +77,11 @@
                   <i class="bi bi-star me-2"></i>評分列表
                 </a>
               </li>
+              <li>
+                <a class="dropdown-item" href="{% url 'View_Card' %}">
+                  <i class="bi bi-code-slash me-2"></i>查看抽卡紀錄
+                </a>
+              </li>
               {% if user.is_staff %}
               <li>
                 <a class="dropdown-item" href="{% url 'ManageMaterials' %}">

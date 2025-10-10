@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     "material",  # Material app
     "features",  # Feature toggle app
     "game", # game app
-    "storages",  # For handling file storage
+    "storages",  # For Azure Storage
 ]
 
 MIDDLEWARE = [
@@ -101,8 +101,6 @@ WSGI_APPLICATION = "ProgramWeb.wsgi.application"
 #     }
 # }
 
-
-# 填入您的 Azure 資訊
 AZURE_ACCOUNT_NAME = os.getenv('AZURE_ACCOUNT_NAME')
 AZURE_ACCOUNT_KEY = os.getenv('AZURE_ACCOUNT_KEY')
 AZURE_CONTAINER = os.getenv('AZURE_CONTAINER')
