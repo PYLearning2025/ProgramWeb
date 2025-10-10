@@ -9,7 +9,18 @@ import random
 from django.urls import reverse
 from django.db.models import F
 
-client = genai.Client()
+_client = None
+
+def get_genai_client():
+    global _client
+    if _client is None:
+        api_key = os.getenv('GEMINI_API_KEY')
+        if api_key:
+            _client = genai.Client(api_key=api_key)
+        else:
+            # If no API key, return None and handle gracefully
+            _client = None
+    return _client
 
 @login_required
 @answer_over
