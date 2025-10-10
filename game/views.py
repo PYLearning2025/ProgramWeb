@@ -63,3 +63,11 @@ def draw_card(request):
         GameLog.objects.create(student=request.user, card=card)
         return JsonResponse({'redirect_url': f'/game/result/{card.id}/'})
     return JsonResponse({'result': 'error', 'message': 'Invalid request method'})
+
+@login_required
+def view_card(request):
+    card_records = CardRecord.objects.filter(student=request.user)
+    
+    print(card_records)
+    # card_records = card_records.card
+    return render(request, 'game/view_card.html', {"card_records": card_records})
