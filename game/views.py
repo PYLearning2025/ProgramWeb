@@ -78,7 +78,4 @@ def draw_card(request):
 @login_required
 def view_card(request):
     card_records = CardRecord.objects.filter(student=request.user)
-    
-    print(card_records)
-    # card_records = card_records.card
     return render(request, 'game/view_card.html', {"card_records": card_records})

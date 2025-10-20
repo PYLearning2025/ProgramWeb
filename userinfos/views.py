@@ -29,8 +29,9 @@ def userinfo(request):
         else:
             # 一般情況兩個都驗證
             if info_form.is_valid() and email_form.is_valid():
-                if not re.match(r'^\d{9}$', info_form.cleaned_data['student_id']):
-                    return JsonResponse({"success": False, "message": "儲存失敗，學號格式錯誤，請輸入9位數字"})
+                if 'student_id' in info_form.cleaned_data:
+                    if not re.match(r'^\d{9}$', info_form.cleaned_data['student_id']):
+                        return JsonResponse({"success": False, "message": "儲存失敗，學號格式錯誤，請輸入9位數字"})
                 info_form.save()
                 email_form.save()
                 return JsonResponse({'success': True, 'message': '儲存成功'})

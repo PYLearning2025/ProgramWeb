@@ -77,7 +77,7 @@
           <form method="post" id="reviewForm">
             {% csrf_token %}
             <div class="mb-3">
-              <label class="form-label">題目正確性 (0-5)</label>
+              <label class="form-label">題目正確性 (1-5)</label>
               <select class="form-select" name="question_accuracy_score" required>
                 {% for i in "012345" %}
                 <option value="{{ forloop.counter0 }}">{{ forloop.counter0 }}</option>
@@ -85,7 +85,7 @@
               </select>
             </div>
             <div class="mb-3">
-              <label class="form-label">題目複雜度 (0-5)</label>
+              <label class="form-label">題目複雜度 (1-5)</label>
               <select class="form-select" name="complexity_score" required>
                 {% for i in "012345" %}
                 <option value="{{ forloop.counter0 }}">{{ forloop.counter0 }}</option>
@@ -93,7 +93,7 @@
               </select>
             </div>
             <div class="mb-3">
-              <label class="form-label">練習性 (0-5)</label>
+              <label class="form-label">練習性 (1-5)</label>
               <select class="form-select" name="practice_score" required>
                 {% for i in "012345" %}
                 <option value="{{ forloop.counter0 }}">{{ forloop.counter0 }}</option>
@@ -101,7 +101,7 @@
               </select>
             </div>
             <div class="mb-3">
-              <label class="form-label">答案正確性 (0-5)</label>
+              <label class="form-label">答案正確性 (1-5)</label>
               <select class="form-select" name="answer_accuracy_score" required>
                 {% for i in "012345" %}
                 <option value="{{ forloop.counter0 }}">{{ forloop.counter0 }}</option>
@@ -109,7 +109,7 @@
               </select>
             </div>
             <div class="mb-3">
-              <label class="form-label">可讀性 (0-5)</label>
+              <label class="form-label">可讀性 (1-5)</label>
               <select class="form-select" name="readability_score" required>
                 {% for i in "012345" %}
                 <option value="{{ forloop.counter0 }}">{{ forloop.counter0 }}</option>

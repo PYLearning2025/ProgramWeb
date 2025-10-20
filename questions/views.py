@@ -90,12 +90,17 @@ def question_detail(request, question_id):
     # 獲取問題的歷史記錄
     history = QuestionHistory.objects.filter(question=question).order_by('-version')
 
-    # 獲取問題的回答
-    answer = Answer.objects.filter(user=request.user, question=question).first()
+    if request.user.is_authenticated:
+        # 獲取問題的回答
+        answer = Answer.objects.filter(user=request.user, question=question).first()
 
-    # 獲取問題的評論
-    review = PeerReview.objects.filter(reviewed_question=question, reviewer=request.user).first()
-
+        # 獲取問題的評論
+        review = PeerReview.objects.filter(reviewed_question=question, reviewer=request.user).first()
+    
+    else:
+        answer = None
+        review = None
+        
     return render(request, 'questions/detail.html', locals())
 
 @login_required
