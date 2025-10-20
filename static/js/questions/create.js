@@ -4,8 +4,8 @@ let monacoEditor;
 $(document).ready(function () {
   // 根據頁面模式初始化按鈕狀態
   if (pageMode === 'create') {
-    // 創建模式：一開始就禁用提交按鈕
-    $("#submit-button").prop("disabled", true).text("請先進行AI分析");
+    // 創建模式：一開始就啟用提交按鈕
+    $("#submit-button").prop("disabled", false).text("提交問題");
   } else if (pageMode === 'update') {
     // 更新模式：直接啟用提交按鈕，並設置aiAnalyzed為true
     $("#submit-button").prop("disabled", false).text("更新問題");
@@ -98,16 +98,6 @@ function validateForm() {
 
   $form.on("submit", function (event) {
     showLoading();
-    // 檢查是否已經進行AI分析（只在創建模式下檢查）
-    if (pageMode === 'create' && !aiAnalyzed) {
-      event.preventDefault();
-      // 顯示 toast 提示
-      showToast("請先點擊『AI分析』並完成分析後才能提交問題。", 'warning');
-      // 滾動到AI分析按鈕
-      $("html, body").animate({ scrollTop: $("#ai-analysis-button").offset().top - 100 }, "smooth");
-      showOriginal();
-      return;
-    }
 
     let isValid = true;
     const requiredFields = [
@@ -236,10 +226,7 @@ function submitForm($form) {
     success: function (response) {
       if (response.success) {
         showToast(response.message, 'success');
-        // 延遲跳轉，讓用戶看到成功消息
-        setTimeout(() => {
-          window.location.href = response.redirect_url;
-        }, 1500);
+        showOriginal();
       } else {
         $('#submit-button').prop("disabled", false).text(pageMode === 'create' ? "提交問題" : "更新問題");
         showToast(response.message, 'error');
@@ -326,8 +313,8 @@ function aiAnalysis() {
     return;
   }
 
-  // 禁用提交按鈕
-  $("#submit-button").prop("disabled", true).text("AI分析中...");
+  // AI分析中仍啟用提交按鈕
+  $("#submit-button").prop("disabled", false).text("提交問題");
 
   // 顯示正在分析提示
   const $title = $("#ai-analysis-title");
@@ -371,12 +358,12 @@ function aiAnalysis() {
       showToast("AI分析失敗，請稍後再試", 'error');
 
       // 恢復提交按鈕和原始狀態
-      $("#submit-button").prop("disabled", true).text("提交問題");
+      $("#submit-button").prop("disabled", false).text("提交問題");
       $("#ai-analysis-button").prop("disabled", false).text("AI分析");
       $title.text("注意事項");
       $content.html(`
         <ul class="list-group list-group-flush">
-          <li class="list-group-item">題目提交後需經過審核才會顯示</li>
+          <li class="list-group-item">可以選擇進行AI分析再提交題目</li>
           <li class="list-group-item">難度級別決定題目的分類和推薦順序</li>
           <li class="list-group-item">提供清晰的輸入輸出格式有助於學習</li>
           <li class="list-group-item">參考資料請提供有效的 URL</li>
