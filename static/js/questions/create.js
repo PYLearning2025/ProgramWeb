@@ -227,6 +227,7 @@ function submitForm($form) {
       if (response.success) {
         showToast(response.message, 'success');
         showOriginal();
+        window.location.href = response.redirect_url;
       } else {
         $('#submit-button').prop("disabled", false).text(pageMode === 'create' ? "提交問題" : "更新問題");
         showToast(response.message, 'error');
