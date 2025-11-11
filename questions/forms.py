@@ -88,7 +88,7 @@ class QuestionForm(forms.ModelForm):
             'tags': '標籤',
             'answer': '答案',
             'hint': '提示',
-            'reference': '參考資料',
+            'reference': '參考資料(僅限連結)',
         }
 
 class QuestionHistoryForm(forms.ModelForm):
