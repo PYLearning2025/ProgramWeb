@@ -22,7 +22,7 @@ def run_test_cases(student_code, question_id):
     except Question.DoesNotExist:
         return "CE", False
     data = {
-        "image": "glot/python:latest",
+        "image": "python-root:latest",
         "payload": {
             "language": "python",
             "stdin": "\n".join(inputs),
